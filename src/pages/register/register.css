@@ -1,0 +1,136 @@
+/* --- Variáveis de Cor Globais (mesmas do login.css) --- */
+:root {
+  --primary-color: #2a5b4a; /* Verde escuro da logo */
+  --secondary-color: #7fbf7f; /* Verde mais claro para acentos */
+  --background-color: #f8f9fa; /* Cinza muito claro para o fundo */
+  --card-background: #ffffff;
+  --text-color: #343a40;
+  --text-light: #6c757d;
+  --border-color: #dee2e6;
+}
+
+/* --- Estilos Globais e do Body --- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--background-color);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 40px 0; /* Adiciona padding para rolar em telas menores */
+}
+
+/* --- Container Principal do Registro (AJUSTADO) --- */
+.register-container {
+  text-align: center;
+  padding: 40px;
+  background-color: var(--card-background);
+  border-radius: 20px; /* Bordas mais arredondadas, como no exemplo */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Sombra um pouco mais pronunciada */
+  border: 2px solid var(--primary-color); /* Borda mais grossa com a cor principal */
+  width: 100%;
+  max-width: 420px; /* Um pouco maior para dar mais presença */
+}
+
+.register-container h2 {
+  color: var(--primary-color);
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 2rem;
+}
+
+/* --- Formulário --- */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.register-form label {
+  text-align: left;
+  color: var(--text-color);
+  align-self: flex-start;
+  font-weight: 500;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+/* --- Inputs e Select (AJUSTADO) --- */
+.register-input,
+select.register-input {
+  margin-bottom: 15px;
+  padding: 12px;
+  width: 100%;
+  border-radius: 8px; /* Bordas arredondadas como no exemplo */
+  border: 1px solid var(--border-color);
+  font-size: 14px; /* Tamanho da fonte como no exemplo */
+  font-family: inherit;
+  color: var(--text-color);
+  background-color: white;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.register-input:focus,
+select.register-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.1);
+}
+
+.register-input::placeholder {
+  color: var(--text-light);
+}
+
+/* --- Botão Principal (AJUSTADO) --- */
+.register-button {
+  margin-top: 20px;
+  padding: 12px 20px;
+  width: 60%;
+  align-self: center; /* Botão de registro com largura total */
+  border-radius: 8px;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.register-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* --- Link de Login --- */
+.LoginLink { /* Adicione esta classe ao seu link de "Voltar para o Login" */
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.LoginLink:hover {
+  text-decoration: underline;
+}
+
+/* --- Estilos para Mensagens de Erro --- */
+.error-list {
+  margin: -10px 0 10px 0;
+  padding: 0;
+  width: 100%;
+  text-align: left;
+  list-style-type: none;
+}
+ 
+.error-message {
+  color: #dc3545; /* Um vermelho padrão para erros */
+  font-size: 0.85rem;
+  margin-top: 2px;
+}

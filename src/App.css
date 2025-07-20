@@ -1,0 +1,13 @@
+.app-layout {
+    display: flex;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding-left: 200px; 
+    padding-top: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 2rem;
+    box-sizing: border-box;
+    width: 100%;
+}

@@ -1,0 +1,137 @@
+:root {
+    --primary-color: #2a5b4a; /* Verde escuro da logo */
+    --secondary-color: #7fbf7f; /* Verde mais claro para acentos */
+    --background-color: #f8f9fa; /* Cinza muito claro para o fundo */
+    --card-background: #ffffff;
+    --text-color: #343a40;
+    --text-light: #6c757d;
+    --border-color: #dee2e6;
+}
+
+/* --- Estilos Globais e do Body --- */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--background-color);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+/* --- Container Principal do Login (Estilo do Exemplo) --- */
+.login-container {
+  margin-top: 60px;
+  text-align: center;
+  font-family: inherit;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 2px solid var(--primary-color);
+  margin-top: -60px;
+  width: 400px;
+}
+
+.login-container h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 35px;
+    font-size: 2.2rem;
+    font-weight: bold; /* Alterado para negrito */
+}
+
+/* --- Formulário --- */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.login-form label {
+    text-align: left;
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+/* --- Container para Input com Ícone (ESSENCIAL PARA O EFEITO) --- */
+.input-wrapper {
+    position: relative; /* Define o contexto de posicionamento */
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.login-input {
+    width: 100%;
+    padding: 16px 45px 16px 20px; /* Espaço para o ícone e altura ajustados */
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* --- Estilo do Ícone (ESSENCIAL PARA O EFEITO) --- */
+.input-icon {
+    position: absolute; /* Posiciona o ícone em relação ao .input-wrapper */
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    cursor: pointer;
+    display: flex; 
+    align-items: center;
+}
+
+.login-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.1);
+}
+
+/* --- Botão Principal --- */
+.login-button {
+    margin-top: 15px;
+    padding: 15px 20px;
+    width: 60%;
+    align-self: center;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.login-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* --- Links Abaixo do Botão --- */
+.links-container {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.link {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
