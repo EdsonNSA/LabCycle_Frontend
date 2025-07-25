@@ -18,11 +18,10 @@ body {
 
 .painel-container {
   display: flex;
-  width: 100vw; /* CORREÇÃO: Força o container a usar 100% da largura da tela */
-  height: 100vh; /* Ocupa a altura total da tela */
+  width: 100vw;
+  height: 100vh;
 }
 
-/* --- Barra Lateral --- */
 .sidebar {
   width: 256px;
   background-color: var(--card-background);
@@ -91,7 +90,6 @@ body {
   border-top: 1px solid var(--border-color);
 }
 
-/* --- Conteúdo Principal --- */
 .main-content {
   flex: 1;
   display: flex;
@@ -188,7 +186,6 @@ body {
   gap: 2rem;
 }
 
-/* --- Estilos dos Cards --- */
 .card {
   background-color: var(--card-background);
   padding: 1.5rem;
@@ -203,7 +200,6 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Card: Próxima Aula */
 .proxima-aula-card {
   background-color: var(--primary-color);
   color: white;
@@ -257,7 +253,6 @@ body {
   transform: scale(1.05);
 }
 
-/* Card: Progresso */
 .progress-bar-info {
   display: flex;
   justify-content: space-between;
@@ -303,7 +298,6 @@ body {
 .text-green-600 { color: #16a34a; }
 .text-yellow-600 { color: #ca8a04; }
 
-/* Card: Notificações */
 .notificacoes-card ul {
   list-style: none;
   padding: 0;
@@ -333,7 +327,6 @@ body {
   color: #94a3b8;
 }
 
-/* Card: Biblioteca */
 .biblioteca-card ul {
   list-style: none;
   padding: 0;

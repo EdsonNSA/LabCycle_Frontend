@@ -1,14 +1,13 @@
 :root {
-    --primary-color: #2a5b4a; /* Verde escuro da logo */
-    --secondary-color: #7fbf7f; /* Verde mais claro para acentos */
-    --background-color: #f8f9fa; /* Cinza muito claro para o fundo */
+    --primary-color: #2a5b4a;
+    --secondary-color: #7fbf7f;
+    --background-color: #f8f9fa;
     --card-background: #ffffff;
     --text-color: #343a40;
     --text-light: #6c757d;
     --border-color: #dee2e6;
 }
 
-/* --- Estilos Globais e do Body --- */
 * {
     box-sizing: border-box;
 }
@@ -23,7 +22,6 @@ body {
     margin: 0;
 }
 
-/* --- Container Principal do Login (Estilo do Exemplo) --- */
 .login-container {
   margin-top: 60px;
   text-align: center;
@@ -42,10 +40,9 @@ body {
     margin-top: 0;
     margin-bottom: 35px;
     font-size: 2.2rem;
-    font-weight: bold; /* Alterado para negrito */
+    font-weight: bold;
 }
 
-/* --- Formulário --- */
 .login-form {
     display: flex;
     flex-direction: column;
@@ -60,16 +57,15 @@ body {
     font-size: 0.9rem;
 }
 
-/* --- Container para Input com Ícone (ESSENCIAL PARA O EFEITO) --- */
 .input-wrapper {
-    position: relative; /* Define o contexto de posicionamento */
+    position: relative;
     width: 100%;
     margin-bottom: 20px;
 }
 
 .login-input {
     width: 100%;
-    padding: 16px 45px 16px 20px; /* Espaço para o ícone e altura ajustados */
+    padding: 16px 45px 16px 20px;
     border-radius: 8px;
     border: 1px solid var(--border-color);
     font-size: 1rem;
@@ -77,9 +73,8 @@ body {
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* --- Estilo do Ícone (ESSENCIAL PARA O EFEITO) --- */
 .input-icon {
-    position: absolute; /* Posiciona o ícone em relação ao .input-wrapper */
+    position: absolute;
     top: 50%;
     right: 20px;
     transform: translateY(-50%);
@@ -95,7 +90,6 @@ body {
     box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.1);
 }
 
-/* --- Botão Principal --- */
 .login-button {
     margin-top: 15px;
     padding: 15px 20px;
@@ -116,7 +110,6 @@ body {
   transform: translateY(-2px);
 }
 
-/* --- Links Abaixo do Botão --- */
 .links-container {
     margin-top: 25px;
     display: flex;

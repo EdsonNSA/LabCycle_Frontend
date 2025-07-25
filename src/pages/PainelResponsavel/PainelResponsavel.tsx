@@ -1,7 +1,5 @@
 import React from 'react';
 import './PainelResponsavel.css';
-
-// Importando os ícones da biblioteca react-icons (pacote Lucide)
 import {
     LayoutDashboard,
     FlaskConical,
@@ -16,7 +14,6 @@ import {
     MoreHorizontal
 } from 'lucide-react';
 
-// --- Dados de Exemplo (Mock Data) ---
 const professorInfo = {
     nome: 'Edson Nunes',
     departamento: 'Departamento de Química',
@@ -41,12 +38,10 @@ const agendaData = [
     { id: 1, disciplina: 'Química Geral', turma: '2025.1', pratica: 'Prática 04: Eletrólise', data: '25 de Julho, 14:00' },
     { id: 2, disciplina: 'Química Orgânica', turma: '2025.1', pratica: 'Prática 02: Destilação', data: '28 de Julho, 09:00' },
 ];
-// -----------------------------------------
 
 const PainelResponsavel: React.FC = () => {
     return (
         <div className="painel-container">
-            {/* Barra Lateral de Navegação */}
             <aside className="sidebar">
                 <div className="sidebar-header">
                     <h1 className="logo-text">LabCycle</h1>
@@ -64,7 +59,6 @@ const PainelResponsavel: React.FC = () => {
                 </div>
             </aside>
 
-            {/* Conteúdo Principal */}
             <div className="main-content">
                 <header className="main-header">
                     <div>
@@ -88,7 +82,6 @@ const PainelResponsavel: React.FC = () => {
                         <p className="greeting-subtitle">Aqui está um resumo das atividades do seu laboratório.</p>
                     </div>
 
-                    {/* Seção de Ações Rápidas e KPIs */}
                     <div className="actions-and-kpis">
                         <div className="kpi-cards-grid">
                             <div className="kpi-card">
@@ -119,7 +112,6 @@ const PainelResponsavel: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Seção de Gestão de Inventário */}
                     <div className="card inventario-card">
                         <div className="card-header-flex">
                             <h4 className="card-title">Resumo do Inventário</h4>
@@ -151,7 +143,6 @@ const PainelResponsavel: React.FC = () => {
                         </table>
                     </div>
                     
-                    {/* Seção da Agenda */}
                     <div className="card agenda-card">
                          <div className="card-header-flex">
                             <h4 className="card-title">Próximas Aulas Práticas</h4>

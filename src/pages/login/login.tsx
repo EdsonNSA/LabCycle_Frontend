@@ -2,15 +2,12 @@ import { useState, FormEvent } from 'react';
 import './login.css';
 import { useNavigate } from 'react-router-dom';
 import { handleLogin } from '../handles';
-// 1. Importe os ícones que você precisa do react-icons
 import { FaUser, FaEye, FaEyeSlash } from 'react-icons/fa';
 
-// 2. Crie uma interface para as props dos ícones
 interface IconProps {
   className?: string;
 }
 
-// 3. Use a interface na conversão de tipo
 const IconUser = FaUser as unknown as React.FC<IconProps>;
 const IconEye = FaEye as unknown as React.FC<IconProps>;
 const IconEyeSlash = FaEyeSlash as unknown as React.FC<IconProps>;
@@ -45,7 +42,6 @@ const Login: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          {/* Agora o TypeScript entende a prop className */}
           <IconUser className="input-icon" />
         </div>
         

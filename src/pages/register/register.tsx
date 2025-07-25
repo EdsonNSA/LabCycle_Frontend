@@ -1,13 +1,9 @@
 import { useState } from 'react';
 import './register.css';
 import { useNavigate } from 'react-router-dom';
-
-// Funções e tipos importados
 import { handleRegister } from '../handles';
 import { cpfMask } from '../../utils/mask/cpfMask';
-// import { Funcionario } from '../../interfaces/Funcionario'; // << REMOVIDO
 
-// << ADICIONADO: Interface local para definir a estrutura do estado do formulário
 interface FormularioState {
   nome: string;
   cpf: string;
@@ -18,7 +14,6 @@ interface FormularioState {
 }
 
 function Register() {
-  // << ALTERADO: Usamos a interface local e inicializamos com um objeto simples
   const [formulario, setFormulario] = useState<FormularioState>({
     nome: '',
     cpf: '',
@@ -30,8 +25,6 @@ function Register() {
   
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const navigate = useNavigate();
-
-  // Função para alterar campo (continua igual)
   const aoAlterarCampo = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     const valorFormatado = name === "cpf" ? cpfMask(value) : value;
@@ -42,7 +35,6 @@ function Register() {
     }));
   };
 
-  // Função para submeter o formulário (continua igual)
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     handleRegister({
       event: e,
@@ -57,12 +49,10 @@ function Register() {
     });
   };
 
-  // O JSX do formulário (continua exatamente o mesmo)
   return (
     <div className="register-container">
       <h2>Cadastro de Funcionário</h2>
       <form className="register-form" onSubmit={handleSubmit}>
-        {/* ... todo o seu JSX do formulário permanece aqui ... */}
         
         <label htmlFor='nomeReg'>Nome Completo</label>
         <input

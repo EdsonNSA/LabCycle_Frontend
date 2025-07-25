@@ -1,9 +1,5 @@
-/* --- Importa os estilos base do painel do aluno para reutilização --- */
 @import url('../PainelAluno/PainelAluno.css');
 
-/* --- Estilos Específicos para o Painel do Professor --- */
-
-/* Seção de Ações e KPIs */
 .actions-and-kpis {
     display: grid;
     grid-template-columns: 1fr;
@@ -95,7 +91,6 @@
     background-color: var(--primary-color-dark);
 }
 
-/* Card do Inventário */
 .inventario-card, .agenda-card {
     margin-bottom: 2rem;
 }
@@ -173,7 +168,6 @@
     color: var(--text-color);
 }
 
-/* Card da Agenda */
 .agenda-list {
     list-style: none;
     padding: 0;
