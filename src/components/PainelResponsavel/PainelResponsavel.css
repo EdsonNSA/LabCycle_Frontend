@@ -1,0 +1,224 @@
+/* --- Importa os estilos base do painel do aluno para reutilização --- */
+@import url('../PainelAluno/PainelAluno.css');
+
+/* --- Estilos Específicos para o Painel do Professor --- */
+
+/* Seção de Ações e KPIs */
+.actions-and-kpis {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .actions-and-kpis {
+        grid-template-columns: 3fr 1fr;
+        align-items: center;
+    }
+}
+
+.kpi-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+}
+
+.kpi-card {
+    background-color: var(--card-background);
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.kpi-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+}
+.text-red-500 { color: #ef4444; }
+.text-blue-500 { color: #3b82f6; }
+.text-green-500 { color: #22c55e; }
+
+
+.kpi-value {
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.kpi-label {
+    font-size: 0.875rem;
+    color: var(--text-light);
+}
+
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .quick-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+}
+
+@media (min-width: 1024px) {
+    .quick-actions {
+        flex-direction: column;
+    }
+}
+
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+.action-button:hover {
+    background-color: var(--primary-color-dark);
+}
+
+/* Card do Inventário */
+.inventario-card, .agenda-card {
+    margin-bottom: 2rem;
+}
+
+.card-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.card-link {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+.card-link:hover {
+    text-decoration: underline;
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.inventory-table th, .inventory-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.inventory-table th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.inventory-table td {
+    font-size: 0.875rem;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-baixo-estoque {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+.status-vencendo {
+    background-color: #fffbeb;
+    color: #d97706;
+}
+.status-ok {
+    background-color: #f0fdf4;
+    color: #16a34a;
+}
+
+.table-action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-light);
+    padding: 0.25rem;
+    border-radius: 9999px;
+}
+.table-action-button:hover {
+    background-color: #f1f5f9;
+    color: var(--text-color);
+}
+
+/* Card da Agenda */
+.agenda-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.agenda-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.agenda-icon-wrapper {
+    background-color: #eef2ff;
+    color: var(--primary-color);
+    padding: 0.75rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.agenda-details {
+    flex-grow: 1;
+}
+
+.agenda-pratica {
+    font-weight: 600;
+}
+
+.agenda-disciplina {
+    font-size: 0.875rem;
+    color: var(--text-light);
+}
+
+.agenda-data {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-color);
+    white-space: nowrap;
+}

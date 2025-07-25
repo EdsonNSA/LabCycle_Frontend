@@ -1,10 +1,9 @@
 import React from 'react';
 import './PainelAluno.css';
 
-// Importando os ícones da biblioteca react-icons (pacote Lucide)
 import { 
     LayoutDashboard, 
-    FlaskConical, 
+    Users, 
     GraduationCap, 
     BookCopy, 
     LogOut, 
@@ -19,7 +18,6 @@ import {
     BookOpen 
 } from 'lucide-react';
 
-// --- Dados de Exemplo (Mock Data) ---
 const alunoInfo = {
     nome: 'Emilly Audryn',
     curso: 'Engenharia Química',
@@ -41,12 +39,10 @@ const progressoCurso = {
     pendentes: 4,
     media: 8.5
 };
-// -----------------------------------------
 
 const PainelAluno: React.FC = () => {
     return (
         <div className="painel-container">
-            {/* Barra Lateral de Navegação */}
             <aside className="sidebar">
                 <div className="sidebar-header">
                     <h1 className="logo-text">LabCycle</h1>
@@ -61,7 +57,7 @@ const PainelAluno: React.FC = () => {
                         </li>
                         <li>
                             <a href="#" className="nav-link">
-                                <FlaskConical className="nav-icon" />
+                                <Users className="nav-icon" />
                                 Minhas Turmas
                             </a>
                         </li>
@@ -87,9 +83,7 @@ const PainelAluno: React.FC = () => {
                 </div>
             </aside>
 
-            {/* Conteúdo Principal */}
             <div className="main-content">
-                {/* Cabeçalho Superior */}
                 <header className="main-header">
                     <div>
                         <h2 className="header-title">Painel do Aluno</h2>
@@ -106,7 +100,6 @@ const PainelAluno: React.FC = () => {
                     </div>
                 </header>
 
-                {/* Área de Conteúdo Rolável */}
                 <main className="content-area">
                     <div className="greeting">
                         <h3 className="greeting-title">Olá, {alunoInfo.nome.split(' ')[0]}! 👋</h3>
@@ -115,7 +108,6 @@ const PainelAluno: React.FC = () => {
 
                     <div className="main-grid">
                         <div className="main-column">
-                            {/* Card de Próxima Aula */}
                             <div className="card proxima-aula-card">
                                 <div className="card-header">
                                     <CalendarCheck />
@@ -132,7 +124,6 @@ const PainelAluno: React.FC = () => {
                                 </button>
                             </div>
 
-                            {/* Card de Progresso no Curso */}
                             <div className="card progresso-card">
                                 <h4 className="card-title">Progresso em {progressoCurso.nome}</h4>
                                 <div className="progress-bar-info">
@@ -152,7 +143,6 @@ const PainelAluno: React.FC = () => {
                         </div>
 
                         <div className="sidebar-column">
-                            {/* Card de Notificações */}
                             <div className="card notificacoes-card">
                                 <h4 className="card-title">Notificações Recentes</h4>
                                 <ul>
@@ -173,7 +163,6 @@ const PainelAluno: React.FC = () => {
                                 </ul>
                             </div>
 
-                            {/* Card da Biblioteca de Recursos */}
                             <div className="card biblioteca-card">
                                 <h4 className="card-title">Biblioteca de Recursos</h4>
                                 <ul>

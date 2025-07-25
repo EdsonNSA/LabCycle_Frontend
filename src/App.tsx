@@ -3,22 +3,29 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/login/login';
 import Register from './pages/register/register';
 
-// 1. Importe o novo componente do painel do aluno
+// Importe os componentes dos painéis
 import PainelAluno from './components/PainelAluno/PainelAluno'; 
+import PainelResponsavel from './components/PainelResponsavel/PainelResponsavel'; // 1. Importe o painel do professor
 
 const App: React.FC = () => {
     return (
         <Router>
             <Routes>
+                {/* Rotas de Autenticação */}
                 <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/painel-aluno" element={<PainelAluno />} />
 
+                {/* Rotas dos Painéis */}
+                <Route path="/painel-aluno" element={<PainelAluno />} />
+                <Route path="/painel-responsavel" element={<PainelResponsavel />} /> {/* 2. Adicione a nova rota */}
+
+                {/* Rota de Fallback */}
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
     );
 };
+
 
 export default App;
