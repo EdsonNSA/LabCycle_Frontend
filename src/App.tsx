@@ -5,6 +5,7 @@ import Register from './pages/register/register';
 import PainelAluno from './pages/PainelAluno/PainelAluno'; 
 import PainelResponsavel from './pages/PainelResponsavel/PainelResponsavel';
 import CatalogoKits from './pages/CatalogoKits/CatalogoKits';
+import GestaoInventario from './pages/GestaoInventario/GestaoInventario';
 
 const App: React.FC = () => {
     return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
                 <Route path="/painel-aluno" element={<PainelAluno />} />
                 <Route path="/painel-responsavel" element={<PainelResponsavel />} />
                 <Route path="/catalogo-kits" element={<CatalogoKits />} />
+                <Route path="/gestao-inventario" element={<GestaoInventario />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
