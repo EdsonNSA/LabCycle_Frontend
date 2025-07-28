@@ -55,8 +55,8 @@ const ListaTurmas: React.FC = () => {
                 <nav className="sidebar-nav">
                     <ul>
                         <li><a href="#" className="nav-link"><LayoutDashboard className="nav-icon" />Painel Principal</a></li>
-                        <li><a href="#" className="nav-link"><FlaskConical className="nav-icon" />Inventário</a></li>
                         <li><a href="#" className="nav-link active"><Users className="nav-icon" />Lista de Turmas</a></li>
+                        <li><a href="#" className="nav-link"><FlaskConical className="nav-icon" />Inventário</a></li>
                         <li><a href="#" className="nav-link"><BookCopy className="nav-icon" />Catálogo de Práticas</a></li>
                     </ul>
                 </nav>
@@ -68,7 +68,7 @@ const ListaTurmas: React.FC = () => {
             <div className="main-content">
                 <header className="main-header">
                     <div>
-                        <h2 className="header-title">Minhas Turmas</h2>
+                        <h2 className="header-title">Lista de Turmas</h2>
                     </div>
                     <div className="header-user-info">
                         <Bell className="notification-icon" />

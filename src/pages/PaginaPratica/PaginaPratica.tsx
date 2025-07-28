@@ -150,7 +150,6 @@ const PaginaPratica: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Coluna de Apoio: Segurança, Materiais, Descarte */}
                         <div className="apoio-coluna">
                             <div className="card seguranca-card">
                                 <h3 className="section-title-icon"><ShieldAlert /> Segurança Primeiro!</h3>
