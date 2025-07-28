@@ -6,6 +6,8 @@ import PainelAluno from './pages/PainelAluno/PainelAluno';
 import PainelResponsavel from './pages/PainelResponsavel/PainelResponsavel';
 import CatalogoKits from './pages/CatalogoKits/CatalogoKits';
 import GestaoInventario from './pages/GestaoInventario/GestaoInventario';
+import ListaTurmas from './pages/ListaTurmas/ListaTurmas';
+import PaginaPratica from './pages/PaginaPratica/PaginaPratica';
 
 const App: React.FC = () => {
     return (
@@ -18,6 +20,8 @@ const App: React.FC = () => {
                 <Route path="/painel-responsavel" element={<PainelResponsavel />} />
                 <Route path="/catalogo-kits" element={<CatalogoKits />} />
                 <Route path="/gestao-inventario" element={<GestaoInventario />} />
+                <Route path="/lista-turmas" element={<ListaTurmas />} />
+                <Route path="/pagina-pratica" element={<PaginaPratica />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

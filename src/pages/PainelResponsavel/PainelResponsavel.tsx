@@ -49,7 +49,7 @@ const PainelResponsavel: React.FC = () => {
                 <nav className="sidebar-nav">
                     <ul>
                         <li><a href="#" className="nav-link active"><LayoutDashboard className="nav-icon" />Painel Principal</a></li>
-                         <li><a href="#" className="nav-link"><Users className="nav-icon" />Minhas Turmas</a></li>
+                         <li><a href="#" className="nav-link"><Users className="nav-icon" />Lista de Turmas</a></li>
                         <li><a href="#" className="nav-link"><FlaskConical className="nav-icon" />Inventário</a></li>
                         <li><a href="#" className="nav-link"><BookCopy className="nav-icon" />Catálogo de Kits</a></li>
                     </ul>

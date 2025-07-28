@@ -31,7 +31,7 @@ const GestaoInventario: React.FC = () => {
                     <ul>
                         <li><a href="#" className="nav-link"><LayoutDashboard className="nav-icon" />Painel Principal</a></li>
                         <li><a href="#" className="nav-link active"><FlaskConical className="nav-icon" />Inventário</a></li>
-                        <li><a href="#" className="nav-link"><Users className="nav-icon" />Minhas Turmas</a></li>
+                        <li><a href="#" className="nav-link"><Users className="nav-icon" />Lista de Turmas</a></li>
                         <li><a href="#" className="nav-link"><BookCopy className="nav-icon" />Catálogo de Práticas</a></li>
                     </ul>
                 </nav>

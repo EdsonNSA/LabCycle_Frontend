@@ -58,7 +58,7 @@ const PainelAluno: React.FC = () => {
                         <li>
                             <a href="#" className="nav-link">
                                 <Users className="nav-icon" />
-                                Minhas Turmas
+                                Lista de Turmas
                             </a>
                         </li>
                         <li>
