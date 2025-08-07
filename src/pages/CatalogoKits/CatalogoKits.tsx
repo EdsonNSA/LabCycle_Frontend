@@ -1,15 +1,8 @@
 import React from 'react';
 import './CatalogoKits.css';
 import {
-    LayoutDashboard, FlaskConical, Users, BookCopy, LogOut, Bell, Search, ChevronDown,
-    Recycle, Beaker, Shield, Package, Info, ShoppingCart
+    Search, ChevronDown, Package, Info, ShoppingCart
 } from 'lucide-react';
-
-const professorInfo = {
-    nome: 'Edson Nunes',
-    departamento: 'Departamento de Química',
-    avatarUrl: 'https://placehold.co/40x40/2a5b4a/FFFFFF?text=E'
-};
 
 const kitsData = [
     {
@@ -48,93 +41,56 @@ const kitsData = [
 
 const CatalogoKits: React.FC = () => {
     return (
-        <div className="painel-container">
-            <aside className="sidebar">
-                <div className="sidebar-header">
-                    <h1 className="logo-text">LabCycle</h1>
+        <>
+            <div className="ck-catalogo-header">
+                <div className="ck-search-wrapper">
+                    <Search className="ck-search-icon" />
+                    <input type="text" placeholder="Buscar por módulo ou tema..." className="ck-search-input" />
                 </div>
-                <nav className="sidebar-nav">
-                    <ul>
-                        <li><a href="#" className="nav-link"><LayoutDashboard className="nav-icon" />Painel Principal</a></li>
-                        <li><a href="#" className="nav-link"><FlaskConical className="nav-icon" />Inventário</a></li>
-                        <li><a href="#" className="nav-link"><Users className="nav-icon" />Minhas Turmas</a></li>
-                        <li><a href="#" className="nav-link active"><BookCopy className="nav-icon" />Catálogo de Kits</a></li>
-                    </ul>
-                </nav>
-                <div className="sidebar-footer">
-                    <a href="#" className="nav-link"><LogOut className="nav-icon" />Sair</a>
+                <div className="ck-filters-wrapper">
+                    <button className="ck-filter-button">
+                        Formato do Kit <ChevronDown size={16} />
+                    </button>
                 </div>
-            </aside>
-
-            <div className="main-content">
-                <header className="main-header">
-                    <div>
-                        <h2 className="header-title">Kits Educacionais</h2>
-                    </div>
-                    <div className="header-user-info">
-                        <Bell className="notification-icon" />
-                        <div className="user-details">
-                            <img src={professorInfo.avatarUrl} alt="Avatar do professor" className="user-avatar" />
-                            <div>
-                                <p className="user-name">{professorInfo.nome}</p>
-                                <p className="user-course">{professorInfo.departamento}</p>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
-                <main className="content-area">
-                    <div className="catalogo-header">
-                        <div className="search-wrapper">
-                            <Search className="search-icon" />
-                            <input type="text" placeholder="Buscar por módulo ou tema..." className="search-input" />
-                        </div>
-                        <div className="filters-wrapper">
-                            <button className="filter-button">
-                                Formato do Kit <ChevronDown size={16} />
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="kits-grid">
-                        {kitsData.map(kit => (
-                            <div key={kit.id} className="kit-card">
-                                <div className="kit-image-wrapper">
-                                    <img src={kit.imgUrl} alt={kit.moduloTematico} className="kit-image" />
-                                    <span className={`kit-audience-badge audience-${kit.publicoAlvo.split(' ')[0].toLowerCase()}`}>
-                                        {kit.publicoAlvo}
-                                    </span>
-                                </div>
-                                <div className="kit-content">
-                                    <h3 className="kit-title">{kit.moduloTematico}</h3>
-                                    <p className="kit-description">{kit.objetivoPedagogico}</p>
-                                    
-                                    <div className="kit-items-section">
-                                        <h4 className="kit-items-title">Itens Inclusos:</h4>
-                                        <ul className="kit-items-list">
-                                            {kit.itensInclusos.map(item => (
-                                                <li key={item}><Package size={14} /> {item}</li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    <div className="kit-footer">
-                                        <button className="kit-button secondary">
-                                            <Info size={16} />
-                                            Saber Mais
-                                        </button>
-                                        <button className="kit-button primary">
-                                            <ShoppingCart size={16} />
-                                            Solicitar Orçamento
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </main>
             </div>
-        </div>
+
+            <div className="ck-kits-grid">
+                {kitsData.map(kit => (
+                    <div key={kit.id} className="ck-kit-card">
+                        <div className="ck-kit-image-wrapper">
+                            <img src={kit.imgUrl} alt={kit.moduloTematico} className="ck-kit-image" />
+                            <span className={`ck-kit-audience-badge audience-${kit.publicoAlvo.split(' ')[0].toLowerCase()}`}>
+                                {kit.publicoAlvo}
+                            </span>
+                        </div>
+                        <div className="ck-kit-content">
+                            <h3 className="ck-kit-title">{kit.moduloTematico}</h3>
+                            <p className="ck-kit-description">{kit.objetivoPedagogico}</p>
+                            
+                            <div className="ck-kit-items-section">
+                                <h4 className="ck-kit-items-title">Itens Inclusos:</h4>
+                                <ul className="ck-kit-items-list">
+                                    {kit.itensInclusos.map(item => (
+                                        <li key={item}><Package size={14} /> {item}</li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <div className="ck-kit-footer">
+                                <button className="ck-kit-button secondary">
+                                    <Info size={16} />
+                                    Saber Mais
+                                </button>
+                                <button className="ck-kit-button primary">
+                                    <ShoppingCart size={16} />
+                                    Solicitar Orçamento
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </>
     );
 };
 

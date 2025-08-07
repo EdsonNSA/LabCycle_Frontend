@@ -1,27 +1,12 @@
-@import url('../PainelAluno/PainelAluno.css');
-
-
-.page-header {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.page-main-title {
-    font-size: 1.875rem;
-    font-weight: 700;
-    color: var(--text-color);
-}
-
-.page-subtitle {
-    font-size: 1rem;
-    color: var(--text-light);
-    margin-top: 0.25rem;
+:root {
+  --primary-color: #2a5b4a;
+  --primary-color-dark: #21473a;
+  --background-color: #f8fafc;
+  --card-background: #ffffff;
+  --text-color: #334155;
+  --text-light: #64748b;
+  --border-color: #e2e8f0;
+  --font-family: 'Inter', sans-serif;
 }
 
 .action-button {
@@ -44,67 +29,87 @@
     background-color: var(--primary-color-dark);
 }
 
-.turmas-grid {
+.lt-page-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.lt-page-main-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.lt-page-subtitle {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+}
+
+.lt-turmas-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
 }
 
-.turma-card {
+.lt-turma-card {
     background-color: var(--card-background);
-    border-radius: 0.5rem;
-    border: 2px solid var(--border-color);
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-radius 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-.turma-card:hover {
-    background-color: var(--card-background);
-    border-radius: 0.5rem;
+.lt-turma-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
-.turma-card-header {
+.lt-turma-card-header {
     padding: 0.75rem 1.25rem;
     background-color: #f8fafc;
-    border-radius: calc(0.5rem - 2px) calc(0.5rem - 2px) 0 0;
-    transition: border-radius 0.2s ease-in-out;
+    border-radius: calc(0.75rem - 1px) calc(0.75rem - 1px) 0 0;
 }
 
-.turma-semestre {
+.lt-turma-semestre {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--text-light);
 }
 
-.turma-card-body {
+.lt-turma-card-body {
     padding: 1.25rem;
     flex-grow: 1;
 }
 
-.turma-disciplina {
+.lt-turma-disciplina {
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--primary-color);
     margin: 0 0 0.25rem 0;
 }
 
-.turma-codigo {
+.lt-turma-codigo {
     font-size: 0.875rem;
     color: var(--text-light);
     margin-bottom: 1.5rem;
 }
 
-.turma-stats {
+.lt-turma-stats {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.stat-item {
+.lt-stat-item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -112,21 +117,19 @@
     color: var(--text-color);
 }
 
-.stat-item svg {
+.lt-stat-item svg {
     color: var(--text-light);
     width: 1.25rem;
     height: 1.25rem;
 }
 
-.turma-card-footer {
+.lt-turma-card-footer {
     padding: 1.25rem;
     background-color: #f8fafc;
-    border-radius: 0 0 calc(0.5rem - 2px) calc(0.5rem - 2px);
-    transition: border-radius 0.2s ease-in-out;
+    border-radius: 0 0 calc(0.75rem - 1px) calc(0.75rem - 1px);
 }
 
-
-.turma-button {
+.lt-turma-button {
     width: 100%;
     background-color: var(--primary-color);
     color: white;
@@ -138,6 +141,6 @@
     transition: background-color 0.2s;
 }
 
-.turma-button:hover {
+.lt-turma-button:hover {
     background-color: var(--primary-color-dark);
 }

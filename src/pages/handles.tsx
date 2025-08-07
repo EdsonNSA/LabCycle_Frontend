@@ -38,8 +38,6 @@ export const handleLogin = async ({ event, email, password, navigate }: LoginPro
   localStorage.setItem('authToken', 'token_falso_para_desenvolvimento');
   localStorage.setItem('userRole', userRole);
   localStorage.setItem('userEmail', email);
-
-  alert('Login realizado com sucesso!');
   
   switch (userRole) {
     case 'ALUNO':
@@ -47,7 +45,7 @@ export const handleLogin = async ({ event, email, password, navigate }: LoginPro
       break;
     case 'PROFESSOR':
     case 'TECNICO':
-      navigate('/painel-professor'); 
+      navigate('/painel-responsavel'); 
       break;
     default:
       navigate('/');

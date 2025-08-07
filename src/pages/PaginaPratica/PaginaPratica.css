@@ -1,80 +1,75 @@
-@import url('../PainelAluno/PainelAluno.css');
-
-.breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: var(--text-light);
-}
-.breadcrumb a {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-color);
-    text-decoration: none;
-    font-weight: 500;
-}
-.breadcrumb a:hover {
-    text-decoration: underline;
-}
-.breadcrumb p {
-    font-weight: 600;
-    color: var(--primary-color);
+:root {
+  --primary-color: #2a5b4a;
+  --primary-color-dark: #21473a;
+  --background-color: #f8fafc;
+  --card-background: #ffffff;
+  --text-color: #334155;
+  --text-light: #64748b;
+  --border-color: #e2e8f0;
+  --font-family: 'Inter', sans-serif;
 }
 
-.pratica-header {
+
+.pp-pratica-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
     margin-bottom: 2rem;
 }
-.pratica-title {
+.pp-pratica-title {
     font-size: 2.25rem;
     font-weight: 700;
     color: var(--text-color);
     line-height: 1.2;
 }
-.pratica-meta {
+.pp-pratica-meta {
     display: flex;
     gap: 1.5rem;
     margin-top: 0.75rem;
     color: var(--text-light);
 }
-.pratica-meta span {
+.pp-pratica-meta span {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-weight: 500;
 }
-.pratica-actions .action-button.secondary {
+.pp-pratica-actions .action-button.secondary {
     background-color: #f1f5f9;
     color: var(--text-color);
     border: 1px solid var(--border-color);
 }
-.pratica-actions .action-button.secondary:hover {
+.pp-pratica-actions .action-button.secondary:hover {
     background-color: #e2e8f0;
 }
 
-.overview-card {
+.pp-card {
+  background-color: var(--card-background);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  border: 1px solid var(--border-color);
+}
+
+.pp-overview-card {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
     align-items: center;
 }
 @media (min-width: 768px) {
-    .overview-card {
+    .pp-overview-card {
         grid-template-columns: repeat(2, 1fr);
     }
 }
-.section-title {
+.pp-section-title {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1rem;
     color: var(--text-color);
 }
-.objetivos-list {
+.pp-objetivos-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -82,23 +77,23 @@
     flex-direction: column;
     gap: 0.75rem;
 }
-.objetivos-list li {
+.pp-objetivos-list li {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
-.objetivos-list svg {
+.pp-objetivos-list svg {
     color: var(--primary-color);
     flex-shrink: 0;
 }
-.video-wrapper {
+.pp-video-wrapper {
     position: relative;
     padding-bottom: 56.25%;
     height: 0;
     overflow: hidden;
     border-radius: 0.5rem;
 }
-.video-wrapper iframe {
+.pp-video-wrapper iframe {
     position: absolute;
     top: 0;
     left: 0;
@@ -107,7 +102,7 @@
     border: 0;
 }
 
-.pratica-grid {
+.pp-pratica-grid {
     margin-top: 2rem;
     display: grid;
     grid-template-columns: 1fr;
@@ -115,18 +110,18 @@
     align-items: flex-start;
 }
 @media (min-width: 1024px) {
-    .pratica-grid {
+    .pp-pratica-grid {
         grid-template-columns: 2fr 1fr;
     }
 }
 
-.procedimento-coluna, .apoio-coluna {
+.pp-procedimento-coluna, .pp-apoio-coluna {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
-.procedimento-list {
+.pp-procedimento-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -134,11 +129,11 @@
     flex-direction: column;
     gap: 1.5rem;
 }
-.procedimento-list li {
+.pp-procedimento-list li {
     display: flex;
     gap: 1rem;
 }
-.passo-numero {
+.pp-passo-numero {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -150,13 +145,13 @@
     font-weight: 700;
     flex-shrink: 0;
 }
-.procedimento-list p {
+.pp-procedimento-list p {
     margin: 0;
     padding-top: 0.25rem;
     line-height: 1.6;
 }
 
-.anotacoes-textarea {
+.pp-anotacoes-textarea {
     width: 100%;
     min-height: 200px;
     padding: 1rem;
@@ -166,13 +161,13 @@
     font-family: inherit;
     resize: vertical;
 }
-.anotacoes-textarea:focus {
+.pp-anotacoes-textarea:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.1);
 }
 
-.section-title-icon {
+.pp-section-title-icon {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -181,7 +176,7 @@
     margin-bottom: 1rem;
     color: var(--text-color);
 }
-.apoio-list {
+.pp-apoio-list {
     list-style: disc;
     padding-left: 1.5rem;
     margin: 0;
@@ -190,23 +185,23 @@
     gap: 0.5rem;
     color: var(--text-light);
 }
-.apoio-list li::marker {
+.pp-apoio-list li::marker {
     color: var(--primary-color);
 }
 
-.seguranca-card {
+.pp-seguranca-card {
     border-left: 4px solid #f87171;
 }
-.seguranca-card .section-title-icon svg {
+.pp-seguranca-card .pp-section-title-icon svg {
     color: #ef4444;
 }
-.descarte-card {
+.pp-descarte-card {
     border-left: 4px solid #3b82f6;
 }
-.descarte-card .section-title-icon svg {
+.pp-descarte-card .pp-section-title-icon svg {
     color: #3b82f6;
 }
-.descarte-card p {
+.pp-descarte-card p {
     line-height: 1.6;
     color: var(--text-light);
 }

@@ -1,15 +1,8 @@
 import React from 'react';
 import './GestaoInventario.css';
 import {
-    LayoutDashboard, FlaskConical, Users, BookCopy, LogOut, Bell, Search, ChevronDown,
-    PlusCircle, Filter, Edit, Trash2
+    Search, ChevronDown, PlusCircle, Filter, Edit, Trash2
 } from 'lucide-react';
-
-const professorInfo = {
-    nome: 'Edson Nunes',
-    departamento: 'Departamento de Química',
-    avatarUrl: 'https://placehold.co/40x40/2a5b4a/FFFFFF?text=E'
-};
 
 const inventarioData = [
     { id: 1, nome: 'Ácido Clorídrico', cas: '7647-01-0', quantidade: '50 mL', validade: '12/12/2025', local: 'Armário A1', status: 'Baixo Estoque' },
@@ -21,101 +14,71 @@ const inventarioData = [
 ];
 
 const GestaoInventario: React.FC = () => {
+    const userRole = localStorage.getItem('userRole');
+    const isManager = userRole === 'PROFESSOR' || userRole === 'TECNICO' || userRole === 'ADMIN';
+
     return (
-        <div className="painel-container">
-            <aside className="sidebar">
-                <div className="sidebar-header">
-                    <h1 className="logo-text">LabCycle</h1>
+        <>
+            <div className="gi-page-header">
+                <div className="gi-search-wrapper">
+                    <Search className="gi-search-icon" />
+                    <input type="text" placeholder="Buscar reagente por nome ou CAS..." className="gi-search-input" />
                 </div>
-                <nav className="sidebar-nav">
-                    <ul>
-                        <li><a href="#" className="nav-link"><LayoutDashboard className="nav-icon" />Painel Principal</a></li>
-                        <li><a href="#" className="nav-link active"><FlaskConical className="nav-icon" />Inventário</a></li>
-                        <li><a href="#" className="nav-link"><Users className="nav-icon" />Lista de Turmas</a></li>
-                        <li><a href="#" className="nav-link"><BookCopy className="nav-icon" />Catálogo de Práticas</a></li>
-                    </ul>
-                </nav>
-                <div className="sidebar-footer">
-                    <a href="#" className="nav-link"><LogOut className="nav-icon" />Sair</a>
-                </div>
-            </aside>
-
-            <div className="main-content">
-                <header className="main-header">
-                    <div>
-                        <h2 className="header-title">Gestão de Inventário</h2>
+                {isManager && (
+                    <div className="gi-filters-wrapper">
+                        <button className="gi-filter-button">
+                            <Filter size={16} /> Status <ChevronDown size={16} />
+                        </button>
+                        <button className="action-button">
+                            <PlusCircle size={18} /> Adicionar Novo Reagente
+                        </button>
                     </div>
-                    <div className="header-user-info">
-                        <Bell className="notification-icon" />
-                        <div className="user-details">
-                            <img src={professorInfo.avatarUrl} alt="Avatar do professor" className="user-avatar" />
-                            <div>
-                                <p className="user-name">{professorInfo.nome}</p>
-                                <p className="user-course">{professorInfo.departamento}</p>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
-                <main className="content-area">
-                    <div className="page-header">
-                        <div className="search-wrapper">
-                            <Search className="search-icon" />
-                            <input type="text" placeholder="Buscar reagente por nome ou CAS..." className="search-input" />
-                        </div>
-                        <div className="filters-wrapper">
-                            <button className="filter-button">
-                                <Filter size={16} /> Status <ChevronDown size={16} />
-                            </button>
-                            <button className="filter-button primary">
-                                <PlusCircle size={18} /> Adicionar Novo Reagente
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="table-container">
-                        <table className="inventory-table">
-                            <thead>
-                                <tr>
-                                    <th>Reagente</th>
-                                    <th>Quantidade</th>
-                                    <th>Validade</th>
-                                    <th>Status</th>
-                                    <th>Localização</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {inventarioData.map(item => (
-                                    <tr key={item.id}>
-                                        <td>
-                                            <div className="reagente-info">
-                                                <span className="reagente-nome">{item.nome}</span>
-                                                <span className="reagente-cas">CAS: {item.cas}</span>
-                                            </div>
-                                        </td>
-                                        <td>{item.quantidade}</td>
-                                        <td>{item.validade}</td>
-                                        <td>
-                                            <span className={`status-badge status-${item.status.toLowerCase().replace(' ', '-')}`}>
-                                                {item.status}
-                                            </span>
-                                        </td>
-                                        <td>{item.local}</td>
-                                        <td>
-                                            <div className="actions-cell">
-                                                <button className="table-action-button"><Edit size={16} /></button>
-                                                <button className="table-action-button action-delete"><Trash2 size={16} /></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </main>
+                )}
             </div>
-        </div>
+
+            <div className="gi-table-container">
+                <table className="gi-inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Reagente</th>
+                            <th>Quantidade</th>
+                            <th>Validade</th>
+                            <th>Status</th>
+                            <th>Localização</th>
+                            {isManager && <th>Ações</th>}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {inventarioData.map(item => (
+                            <tr key={item.id}>
+                                <td>
+                                    <div className="gi-reagente-info">
+                                        <span className="gi-reagente-nome">{item.nome}</span>
+                                        <span className="gi-reagente-cas">CAS: {item.cas}</span>
+                                    </div>
+                                </td>
+                                <td>{item.quantidade}</td>
+                                <td>{item.validade}</td>
+                                <td>
+                                    <span className={`gi-status-badge status-${item.status.toLowerCase().replace(' ', '-')}`}>
+                                        {item.status}
+                                    </span>
+                                </td>
+                                <td>{item.local}</td>
+                                {isManager && (
+                                    <td>
+                                        <div className="gi-actions-cell">
+                                            <button className="gi-table-action-button"><Edit size={16} /></button>
+                                            <button className="gi-table-action-button action-delete"><Trash2 size={16} /></button>
+                                        </div>
+                                    </td>
+                                )}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </>
     );
 };
 

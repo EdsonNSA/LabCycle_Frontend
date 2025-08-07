@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import './register.css';
 import { useNavigate } from 'react-router-dom';
 import { handleRegister } from '../handles';
@@ -51,7 +51,7 @@ function Register() {
 
   return (
     <div className="register-container">
-      <h2>Cadastro de Funcionário</h2>
+      <h2>Cadastro</h2>
       <form className="register-form" onSubmit={handleSubmit}>
         
         <label htmlFor='nomeReg'>Nome Completo</label>
@@ -101,8 +101,8 @@ function Register() {
           required
         >
           <option value="" disabled>Selecione um cargo</option>
-          <option value="ADMIN">Administrador</option>
-          <option value="USER">Funcionário</option>
+          <option value="PROFESSOR">Professor/Técnico</option>
+          <option value="ALUNO">Aluno</option>
         </select>
 
         <label htmlFor='senhaReg'>Senha</label>
@@ -125,7 +125,7 @@ function Register() {
           </ul>
         )}
 
-        <label htmlFor='confirmSenhaReg'>Confirme sua senha</label>
+        <label htmlFor='confirmSenhaReg'>Confirme a sua senha</label>
         <input
           id='confirmSenhaReg'
           type="password"
@@ -138,6 +138,11 @@ function Register() {
         />
 
         <button type="submit" className="register-button">Cadastrar</button>
+        
+        <p className="LoginLink" onClick={() => navigate('/login')}>
+          Já tem uma conta? Faça login
+        </p>
+
       </form>
     </div>
   );

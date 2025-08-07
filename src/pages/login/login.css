@@ -32,7 +32,8 @@ body {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   border: 2px solid var(--primary-color);
   margin-top: -60px;
-  width: 400px;
+  width: 100%;
+  width: 420px;
 }
 
 .login-container h2 {
