@@ -51,7 +51,7 @@ function Register() {
 
   return (
     <div className="register-container">
-      <h2>Cadastro</h2>
+      <h2>Criar Conta</h2>
       <form className="register-form" onSubmit={handleSubmit}>
         
         <label htmlFor='nomeReg'>Nome Completo</label>
@@ -91,7 +91,7 @@ function Register() {
           required
         />
 
-        <label htmlFor='cargoReg'>Cargo</label>
+        <label htmlFor='cargoReg'>Eu sou</label>
         <select
           id='cargoReg'
           name='cargo'
@@ -100,9 +100,9 @@ function Register() {
           onChange={aoAlterarCampo}
           required
         >
-          <option value="" disabled>Selecione um cargo</option>
-          <option value="PROFESSOR">Professor/Técnico</option>
-          <option value="ALUNO">Aluno</option>
+          <option value="" disabled>Selecione um perfil</option>
+          <option value="ADMIN">Professor/Técnico</option>
+          <option value="USER">Aluno</option>
         </select>
 
         <label htmlFor='senhaReg'>Senha</label>

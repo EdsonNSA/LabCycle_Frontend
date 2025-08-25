@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigateFunction } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 interface LoginProps {
   event: React.FormEvent<HTMLFormElement>;
@@ -20,36 +21,52 @@ interface RegisterProps {
   navigate: NavigateFunction;
 }
 
+const getRoleFromToken = (token: string): string => {
+    try {
+        const decoded: { role: string } = jwtDecode(token);
+        return decoded.role;
+    } catch (error) {
+        console.error("Token inválido:", error);
+        return '';
+    }
+};
+
 export const handleLogin = async ({ event, email, password, navigate }: LoginProps): Promise<void> => {
   event.preventDefault();
 
-  if (!email || !password) {
-    alert('Por favor, preencha o e-mail e a senha.');
-    return;
-  }
+  try {
+    const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+    });
 
-  console.log('Simulando login com o e-mail:', email);
+    if (!response.ok) {
+        throw new Error('Email ou senha inválidos.');
+    }
 
-  let userRole = 'PROFESSOR';
+    const data = await response.json();
+    const userRole = getRoleFromToken(data.token);
 
-  if (email.toLowerCase().includes('aluno')) {
-    userRole = 'ALUNO';
-  }
-  localStorage.setItem('authToken', 'token_falso_para_desenvolvimento');
-  localStorage.setItem('userRole', userRole);
-  localStorage.setItem('userEmail', email);
-  
-  switch (userRole) {
-    case 'ALUNO':
-      navigate('/painel-aluno');
-      break;
-    case 'PROFESSOR':
-    case 'TECNICO':
-      navigate('/painel-responsavel'); 
-      break;
-    default:
-      navigate('/');
-      break;
+    localStorage.setItem('authToken', data.token);
+    localStorage.setItem('userRole', userRole);
+    localStorage.setItem('userEmail', email);
+
+    alert('Login realizado com sucesso!');
+
+    switch (userRole) {
+        case 'USER':
+            navigate('/painel-aluno');
+            break;
+        case 'ADMIN':
+            navigate('/painel-responsavel');
+            break;
+        default:
+            navigate('/');
+    }
+  } catch (error) {
+    console.error('Erro no login:', error);
+    alert('Falha no login. Verifique suas credenciais.');
   }
 };
 
@@ -61,7 +78,6 @@ export const handleRegister = async ({
   password,
   confirmPassword,
   role,
-  setPasswordErrors,
   navigate
 }: RegisterProps): Promise<void> => {
   event.preventDefault();
@@ -70,19 +86,30 @@ export const handleRegister = async ({
     alert('As senhas não coincidem.');
     return;
   }
-
   if (cpf.replace(/\D/g, '').length < 11) {
     alert('O CPF está incorreto!');
     return;
   }
-
   if (!name.trim() || !email.trim() || !role) {
     alert('Por favor, preencha todos os campos obrigatórios.');
     return;
   }
   
-  console.log('Simulando cadastro com os dados:', { cpf, email, name, role });
+  try {
+    const response = await fetch('http://localhost:8080/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role }),
+    });
 
-  alert('Cadastro realizado com sucesso! Você será redirecionado para a tela de login.');
-  navigate('/login');
+    if (!response.ok) {
+        throw new Error('O email informado já pode estar em uso.');
+    }
+
+    alert('Cadastro realizado com sucesso! Você será redirecionado para a tela de login.');
+    navigate('/login');
+  } catch (error) {
+    console.error('Erro no cadastro:', error);
+    alert('Falha no cadastro. Tente novamente.');
+  }
 };
