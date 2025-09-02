@@ -16,11 +16,9 @@ const pageConfig: { [key: string]: { title: string; action?: React.ReactNode } }
     '/catalogo-kits': { title: 'Catálogo de Kits' },
     '/gestao-inventario': { 
         title: 'Gestão de Inventário',
-        action: <button className="action-button"><PlusCircle size={18} /> Adicionar Reagente</button> 
     },
     '/minhas-turmas': { 
         title: 'Minhas Turmas',
-        action: <button className="action-button"><PlusCircle size={18} /> Criar Nova Turma</button>
     },
     '/pagina-pratica': { title: 'Detalhes da Prática' },
 };

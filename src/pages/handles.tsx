@@ -52,7 +52,7 @@ export const handleLogin = async ({ event, email, password, navigate }: LoginPro
     localStorage.setItem('userRole', userRole);
     localStorage.setItem('userEmail', email);
 
-    alert('Login realizado com sucesso!');
+    //alert('Login realizado com sucesso!');
 
     switch (userRole) {
         case 'USER':
