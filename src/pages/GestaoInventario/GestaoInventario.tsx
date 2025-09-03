@@ -4,14 +4,14 @@ import {
     Search, ChevronDown, PlusCircle, Filter, Edit, Trash2, X
 } from 'lucide-react';
 
-import { buscarReagentes, criarReagente, atualizarReagente, deletarReagente, DadosReagente } from '../../services/reagenteService';
+import { buscarReagentes, criarReagente, atualizarReagente, deletarReagente, Reagente } from '../../services/reagenteService';
 
 const GestaoInventario: React.FC = () => {
-    const [reagentes, setReagentes] = useState<DadosReagente[]>([]);
+    const [reagentes, setReagentes] = useState<Reagente[]>([]);
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState<string | null>(null);
     const [modalAberto, setModalAberto] = useState(false);
-    const [reagenteAtual, setReagenteAtual] = useState<DadosReagente | null>(null);
+    const [reagenteAtual, setReagenteAtual] = useState<Reagente | null>(null);
     const userRole = localStorage.getItem('userRole');
     const isManager = userRole === 'ADMIN';
 
@@ -38,7 +38,7 @@ const GestaoInventario: React.FC = () => {
         setModalAberto(true);
     };
 
-    const abrirModalParaEditar = (reagente: DadosReagente) => {
+    const abrirModalParaEditar = (reagente: Reagente) => {
         setReagenteAtual(reagente);
         setModalAberto(true);
     };
@@ -48,7 +48,7 @@ const GestaoInventario: React.FC = () => {
         setReagenteAtual(null);
     };
 
-    const handleSalvar = async (dadosDoFormulario: DadosReagente) => {
+    const handleSalvar = async (dadosDoFormulario: Reagente) => {
         try {
             if (reagenteAtual && reagenteAtual.id) {
                 await atualizarReagente(reagenteAtual.id, dadosDoFormulario);
@@ -88,7 +88,7 @@ const GestaoInventario: React.FC = () => {
                             <Filter size={16} /> Status <ChevronDown size={16} />
                         </button>
                         <button className="gi-action-button" onClick={abrirModalParaCriar}>
-                            <PlusCircle size={18} /> Adicionar Novo Reagente
+                            <PlusCircle size={18} /> Adicionar Reagente
                         </button>
                     </div>
                 )}
@@ -153,13 +153,13 @@ const GestaoInventario: React.FC = () => {
 };
 
 interface ModalReagenteProps {
-    reagente: DadosReagente | null;
-    onSave: (dados: DadosReagente) => void;
+    reagente: Reagente | null;
+    onSave: (dados: Reagente) => void;
     onClose: () => void;
 }
 
 const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, onSave, onClose }) => {
-    const [formData, setFormData] = useState<DadosReagente>({
+    const [formData, setFormData] = useState<Reagente>({
         nome: reagente?.nome || '',
         numeroCas: reagente?.numeroCas || '',
         quantidade: reagente?.quantidade || 0,
@@ -183,7 +183,7 @@ const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, onSave, onClose
         <div className="gi-modal-overlay">
             <div className="gi-modal-content">
                 <div className="gi-modal-header">
-                    <h3>{reagente ? 'Editar Reagente' : 'Adicionar Novo Reagente'}</h3>
+                    <h3>{reagente ? 'Editar Reagente' : 'Adicionar Reagente'}</h3>
                     <button onClick={onClose} className="gi-modal-close-button"><X size={20} /></button>
                 </div>
                 <form onSubmit={handleSubmit} className="gi-modal-form">

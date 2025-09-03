@@ -1,59 +1,35 @@
 :root {
-  --primary-color: #2a5b4a;
-  --primary-color-dark: #21473a;
-  --background-color: #f8fafc;
-  --card-background: #ffffff;
-  --text-color: #334155;
-  --text-light: #64748b;
-  --border-color: #e2e8f0;
-  --font-family: 'Inter', sans-serif;
+    --primary-color: #2a5b4a;
+    --primary-color-dark: #21473a;
+    --background-color: #f8fafc;
+    --card-background: #ffffff;
+    --text-color: #334155;
+    --text-light: #64748b;
+    --border-color: #e2e8f0;
+    --font-family: 'Inter', sans-serif;
 }
 
-
-.card {
-  background-color: var(--card-background);
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  border: 1px solid var(--border-color);
+.pr-greeting {
+    margin-bottom: 2rem;
 }
 
-.card-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
+.pr-greeting-title {
+    font-size: 1.875rem;
+    font-weight: 700;
 }
 
-.greeting-title {
-  font-size: 1.875rem;
-  font-weight: 700;
+.pr-greeting-subtitle {
+    color: var(--text-light);
+    margin-top: 0.25rem;
 }
 
-.greeting-subtitle {
-  color: var(--text-light);
-  margin-top: 0.25rem;
+.pr-card {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    border: 1px solid var(--border-color);
 }
-
-.action-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: 600;
-    padding: 0.75rem 1.25rem;
-    border-radius: 0.5rem;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    text-align: center;
-}
-
-.action-button:hover {
-    background-color: var(--primary-color-dark);
-}
-
 
 .pr-actions-and-kpis {
     display: grid;
@@ -94,7 +70,6 @@
 .text-blue-500 { color: #3b82f6; }
 .text-green-500 { color: #22c55e; }
 
-
 .pr-kpi-value {
     font-size: 1.875rem;
     font-weight: 700;
@@ -112,17 +87,30 @@
     gap: 0.75rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     .pr-quick-actions {
-        flex-direction: row;
-        justify-content: flex-end;
+        align-items: flex-end;
     }
 }
 
-@media (min-width: 1024px) {
-    .pr-quick-actions {
-        flex-direction: column;
-    }
+.pr-action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+.pr-action-button:hover {
+    background-color: var(--primary-color-dark);
 }
 
 .pr-inventario-card, .pr-agenda-card {
@@ -136,6 +124,11 @@
     margin-bottom: 1.5rem;
 }
 
+.pr-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
 .pr-card-link {
     font-size: 0.875rem;
     font-weight: 600;
@@ -143,6 +136,25 @@
     text-decoration: none;
 }
 .pr-card-link:hover {
+    text-decoration: underline;
+}
+
+.pr-card-link-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-decoration: none;
+    padding: 0;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.pr-card-link-button:hover {
     text-decoration: underline;
 }
 
@@ -174,19 +186,17 @@
     font-size: 0.75rem;
     font-weight: 600;
     display: inline-block;
+    text-transform: capitalize;
 }
 
-.status-baixo-estoque {
-    background-color: #fef2f2;
-    color: #dc2626;
-}
-.status-vencendo {
-    background-color: #fffbeb;
-    color: #d97706;
-}
-.status-ok {
-    background-color: #f0fdf4;
-    color: #16a34a;
+.status-baixo-estoque { background-color: #fef2f2; color: #dc2626; }
+.status-vencendo { background-color: #fffbeb; color: #d97706; }
+.status-vencido { background-color: #fee2e2; color: #b91c1c; }
+.status-ok { background-color: #f0fdf4; color: #16a34a; }
+
+.pr-actions-cell {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .pr-table-action-button {
@@ -196,10 +206,17 @@
     color: var(--text-light);
     padding: 0.25rem;
     border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .pr-table-action-button:hover {
     background-color: #f1f5f9;
     color: var(--text-color);
+}
+.pr-table-action-button.action-delete:hover {
+    background-color: #fef2f2;
+    color: #ef4444;
 }
 
 .pr-agenda-list {
@@ -249,4 +266,95 @@
     font-weight: 500;
     color: var(--text-color);
     white-space: nowrap;
+}
+
+.pr-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.pr-modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.pr-modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+.pr-form-group {
+    margin-bottom: 1rem;
+}
+
+.pr-form-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.pr-form-group input,
+.pr-form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.pr-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.pr-modal-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.pr-button-primary,
+.pr-button-secondary {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.pr-button-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.pr-button-secondary {
+    background-color: #e2e8f0;
+    color: var(--text-color);
+}
+
+.pr-agenda-item {
+    position: relative; 
+}
+
+.pr-agenda-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
 }

@@ -65,7 +65,7 @@
     border-radius: 0.5rem;
     border: 1px solid var(--border-color);
     background-color: var(--card-background);
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     font-size: 0.875rem;
     transition: background-color 0.2s;
@@ -157,7 +157,6 @@
     color: var(--status-baixo-text);
 }
 
-/* --- Estilos do Modal --- */
 .gi-modal-overlay {
     position: fixed;
     top: 0;
