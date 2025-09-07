@@ -9,6 +9,7 @@ import CatalogoKits from './pages/CatalogoKits/CatalogoKits';
 import GestaoInventario from './pages/GestaoInventario/GestaoInventario';
 import ListaTurmas from './pages/ListaTurmas/ListaTurmas';
 import PaginaPratica from './pages/PaginaPratica/PaginaPratica';
+import GerenciarPraticas from './pages/PaginaPratica/GerenciarPraticas';
 
 
 const App: React.FC = () => {
@@ -18,13 +19,13 @@ const App: React.FC = () => {
                 <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-
                 <Route path="/painel-aluno" element={<Layout><PainelAluno /></Layout>} />
                 <Route path="/painel-responsavel" element={<Layout><PainelResponsavel /></Layout>} />
                 <Route path="/catalogo-kits" element={<Layout><CatalogoKits /></Layout>} />
                 <Route path="/gestao-inventario" element={<Layout><GestaoInventario /></Layout>} />
                 <Route path="/minhas-turmas" element={<Layout><ListaTurmas /></Layout>} />
                 <Route path="/pagina-pratica" element={<Layout><PaginaPratica /></Layout>} />
+                <Route path="/minhas-turmas/:turmaId/praticas" element={<Layout><GerenciarPraticas /></Layout>} />
 
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

@@ -12,10 +12,6 @@ export interface DadosAgendamento {
     dataHora: string;
 }
 
-export interface NovoAgendamento extends Agendamento {
-    turmaId: string;
-}
-
 const API_URL = 'http://localhost:8080/agendamentos';
 const getToken = () => localStorage.getItem('authToken');
 
@@ -27,7 +23,15 @@ export const buscarAgendamentos = async (): Promise<Agendamento[]> => {
     return response.json();
 };
 
-export const criarAgendamento = async (dados: DadosAgendamento): Promise<NovoAgendamento> => {
+export const buscarAgendamentosPorTurma = async (turmaId: string): Promise<Agendamento[]> => {
+    const response = await fetch(`${API_URL}/por-turma/${turmaId}`, {
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    if (!response.ok) throw new Error('Falha ao buscar os agendamentos da turma.');
+    return response.json();
+};
+
+export const criarAgendamento = async (dados: DadosAgendamento): Promise<Agendamento> => {
     const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
@@ -43,7 +47,7 @@ export const criarAgendamento = async (dados: DadosAgendamento): Promise<NovoAge
     return response.json();
 };
 
-export const atualizarAgendamento = async (id: string, dados: DadosAgendamento) => {
+export const atualizarAgendamento = async (id: string, dados: DadosAgendamento): Promise<Agendamento> => {
     const response = await fetch(`${API_URL}/${id}`, {
         method: 'PUT',
         headers: {
@@ -56,11 +60,10 @@ export const atualizarAgendamento = async (id: string, dados: DadosAgendamento) 
     return response.json();
 };
 
-export const deletarAgendamento = async (id: string) => {
+export const deletarAgendamento = async (id: string): Promise<void> => {
     const response = await fetch(`${API_URL}/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${getToken()}` }
     });
     if (!response.ok) throw new Error('Falha ao deletar agendamento.');
 };
-

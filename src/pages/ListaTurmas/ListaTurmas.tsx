@@ -1,51 +1,76 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ListaTurmas.css';
-import {
-    PlusCircle, Users, FlaskConical
-} from 'lucide-react';
-
-const turmasData = [
-    {
-        id: 1,
-        disciplina: 'Química Geral',
-        codigo: 'QUI-101',
-        semestre: '2025.1',
-        alunos: 45,
-        praticasAgendadas: 8
-    },
-    {
-        id: 2,
-        disciplina: 'Química Orgânica I',
-        codigo: 'QUI-203',
-        semestre: '2025.1',
-        alunos: 32,
-        praticasAgendadas: 5
-    },
-    {
-        id: 3,
-        disciplina: 'Físico-Química',
-        codigo: 'QUI-305',
-        semestre: '2025.1',
-        alunos: 28,
-        praticasAgendadas: 3
-    },
-    {
-        id: 4,
-        disciplina: 'Química Analítica',
-        codigo: 'QUI-208',
-        semestre: '2025.1',
-        alunos: 35,
-        praticasAgendadas: 10
-    },
-];
+import { PlusCircle, Users, FlaskConical, Edit, Trash2 } from 'lucide-react';
+import { buscarTurmas, deletarTurma, criarTurma, atualizarTurma, Turma, DadosCriacaoTurma } from '../../services/turmaService';
+import ModalTurma from './ModalTurma';
 
 const ListaTurmas: React.FC = () => {
     const navigate = useNavigate();
 
-    const handleGerenciarPratica = () => {
-        navigate('/pagina-pratica');
+    const [turmas, setTurmas] = useState<Turma[]>([]);
+    const [carregando, setCarregando] = useState(true);
+    const [erro, setErro] = useState<string | null>(null);
+    const [modalAberto, setModalAberto] = useState(false);
+    const [turmaEmEdicao, setTurmaEmEdicao] = useState<Turma | null>(null);
+
+    const userRole = localStorage.getItem('userRole');
+    const isManager = userRole === 'ADMIN';
+
+    useEffect(() => {
+        const carregarTurmas = async () => {
+            try {
+                setCarregando(true);
+                const dados = await buscarTurmas();
+                setTurmas(dados);
+                setErro(null);
+            } catch (err) {
+                setErro('Não foi possível carregar as turmas.');
+            } finally {
+                setCarregando(false);
+            }
+        };
+        carregarTurmas();
+    }, []);
+
+    const handleDeletarTurma = async (id: string) => {
+        if (window.confirm('Tem certeza que deseja excluir esta turma? Esta ação não pode ser desfeita.')) {
+            try {
+                await deletarTurma(id);
+                setTurmas(turmas.filter(t => t.id !== id));
+            } catch (error) {
+                alert('Falha ao excluir a turma.');
+            }
+        }
     };
+    
+    const handleSalvarTurma = async (dados: DadosCriacaoTurma, id?: string) => {
+        try {
+            if (id) {
+                const turmaAtualizada = await atualizarTurma(id, dados);
+                setTurmas(turmas.map(t => t.id === id ? turmaAtualizada : t));
+            } else {
+                const novaTurma = await criarTurma(dados);
+                setTurmas([...turmas, novaTurma]);
+            }
+            setModalAberto(false);
+        } catch (error) {
+            alert('Não foi possível salvar a turma.');
+        }
+    };
+    
+    const abrirModalParaCriar = () => {
+        setTurmaEmEdicao(null);
+        setModalAberto(true);
+    };
+
+    const abrirModalParaEditar = (turma: Turma) => {
+        setTurmaEmEdicao(turma);
+        setModalAberto(true);
+    };
+
+    if (carregando) return <p>Carregando turmas...</p>;
+    if (erro) return <p style={{ color: 'red' }}>{erro}</p>;
 
     return (
         <>
@@ -54,39 +79,55 @@ const ListaTurmas: React.FC = () => {
                     <h3 className="lt-page-main-title">Gerencie as suas Turmas</h3>
                     <p className="lt-page-subtitle">Visualize, edite e agende práticas para cada uma das suas turmas ativas.</p>
                 </div>
-                <button className="action-button">
-                    <PlusCircle size={18} /> Criar Nova Turma
-                </button>
+                {isManager && (
+                    <button className="action-button" onClick={abrirModalParaCriar}>
+                        <PlusCircle size={18} /> Criar Nova Turma
+                    </button>
+                )}
             </div>
 
             <div className="lt-turmas-grid">
-                {turmasData.map(turma => (
+                {turmas.map(turma => (
                     <div key={turma.id} className="lt-turma-card">
                         <div className="lt-turma-card-header">
                             <span className="lt-turma-semestre">{turma.semestre}</span>
+                            {isManager && (
+                                <div className="lt-turma-actions">
+                                    <button onClick={() => abrirModalParaEditar(turma)}><Edit size={16} /></button>
+                                    <button onClick={() => handleDeletarTurma(turma.id)}><Trash2 size={16} /></button>
+                                </div>
+                            )}
                         </div>
                         <div className="lt-turma-card-body">
-                            <h3 className="lt-turma-disciplina">{turma.disciplina}</h3>
+                            <h3 className="lt-turma-disciplina">{turma.nomeDisciplina}</h3>
                             <p className="lt-turma-codigo">{turma.codigo}</p>
                             <div className="lt-turma-stats">
                                 <div className="lt-stat-item">
                                     <Users size={16} />
-                                    <span>{turma.alunos} Alunos</span>
+                                    <span>{turma.numeroAlunos} Alunos</span>
                                 </div>
                                 <div className="lt-stat-item">
                                     <FlaskConical size={16} />
-                                    <span>{turma.praticasAgendadas} Práticas</span>
+                                    <span>0 Práticas</span>
                                 </div>
                             </div>
                         </div>
                         <div className="lt-turma-card-footer">
-                            <button className="lt-turma-button" onClick={handleGerenciarPratica}>
-                                Gerenciar Prática
+                            <button className="lt-turma-button" onClick={() => navigate(`/minhas-turmas/${turma.id}/praticas`)}>
+                                Gerenciar Práticas
                             </button>
                         </div>
                     </div>
                 ))}
             </div>
+
+            {modalAberto && (
+                <ModalTurma
+                    turma={turmaEmEdicao}
+                    aoFechar={() => setModalAberto(false)}
+                    aoSalvar={handleSalvarTurma}
+                />
+            )}
         </>
     );
 };

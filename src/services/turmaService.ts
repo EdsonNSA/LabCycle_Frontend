@@ -19,6 +19,14 @@ export const buscarTurmas = async (): Promise<Turma[]> => {
     return response.json();
 };
 
+export const buscarTurmaPorId = async (id: string): Promise<Turma> => {
+    const response = await fetch(`${API_URL}/${id}`, {
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    if (!response.ok) throw new Error('Falha ao buscar detalhes da turma.');
+    return response.json();
+};
+
 export const criarTurma = async (dados: DadosCriacaoTurma): Promise<Turma> => {
     const response = await fetch(API_URL, {
         method: 'POST',
@@ -32,3 +40,25 @@ export const criarTurma = async (dados: DadosCriacaoTurma): Promise<Turma> => {
     return response.json();
 };
 
+export const atualizarTurma = async (id: string, dados: DadosCriacaoTurma): Promise<Turma> => {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+        },
+        body: JSON.stringify(dados)
+    });
+    if (!response.ok) throw new Error('Falha ao atualizar turma.');
+    return response.json();
+};
+
+export const deletarTurma = async (id: string): Promise<void> => {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${getToken()}`
+        }
+    });
+    if (!response.ok) throw new Error('Falha ao deletar turma.');
+};
