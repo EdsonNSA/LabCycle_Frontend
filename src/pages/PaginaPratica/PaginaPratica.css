@@ -1,21 +1,55 @@
 :root {
-  --primary-color: #2a5b4a;
-  --primary-color-dark: #21473a;
-  --background-color: #f8fafc;
-  --card-background: #ffffff;
-  --text-color: #334155;
-  --text-light: #64748b;
-  --border-color: #e2e8f0;
-  --font-family: 'Inter', sans-serif;
+    --primary-color: #2a5b4a;
+    --primary-color-dark: #21473a;
+    --background-color: #f8fafc;
+    --card-background: #ffffff;
+    --text-color: #334155;
+    --text-light: #64748b;
+    --border-color: #e2e8f0;
+    --font-family: 'Inter', sans-serif;
 }
 
 
+.action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+.action-button:hover {
+    background-color: var(--primary-color-dark);
+}
+.action-button.secondary {
+    background-color: #f1f5f9;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+.action-button.secondary:hover {
+    background-color: #e2e8f0;
+}
+
+ 
 .pp-pratica-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 1rem;
+    flex-wrap: wrap;  
+    gap: 1.5rem;
     margin-bottom: 2rem;
+}
+.pp-pratica-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0; 
 }
 .pp-pratica-title {
     font-size: 2.25rem;
@@ -35,72 +69,22 @@
     gap: 0.5rem;
     font-weight: 500;
 }
-.pp-pratica-actions .action-button.secondary {
-    background-color: #f1f5f9;
-    color: var(--text-color);
+
+ 
+.pp-card {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     border: 1px solid var(--border-color);
 }
-.pp-pratica-actions .action-button.secondary:hover {
-    background-color: #e2e8f0;
-}
-
-.pp-card {
-  background-color: var(--card-background);
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  border: 1px solid var(--border-color);
-}
-
 .pp-overview-card {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
     align-items: center;
 }
-@media (min-width: 768px) {
-    .pp-overview-card {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-.pp-section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--text-color);
-}
-.pp-objetivos-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-.pp-objetivos-list li {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-.pp-objetivos-list svg {
-    color: var(--primary-color);
-    flex-shrink: 0;
-}
-.pp-video-wrapper {
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    overflow: hidden;
-    border-radius: 0.5rem;
-}
-.pp-video-wrapper iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-}
+@media (min-width: 768px) { .pp-overview-card { grid-template-columns: repeat(2, 1fr); } }
 
 .pp-pratica-grid {
     margin-top: 2rem;
@@ -109,11 +93,7 @@
     gap: 2rem;
     align-items: flex-start;
 }
-@media (min-width: 1024px) {
-    .pp-pratica-grid {
-        grid-template-columns: 2fr 1fr;
-    }
-}
+@media (min-width: 1024px) { .pp-pratica-grid { grid-template-columns: 2fr 1fr; } }
 
 .pp-procedimento-coluna, .pp-apoio-coluna {
     display: flex;
@@ -121,39 +101,72 @@
     gap: 2rem;
 }
 
-.pp-procedimento-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+/* --- Conteúdo dos Cards --- */
+.pp-section-title, .pp-section-title-icon {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-color);
 }
-.pp-procedimento-list li {
-    display: flex;
-    gap: 1rem;
-}
-.pp-passo-numero {
+.pp-section-title-icon {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 9999px;
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: 700;
-    flex-shrink: 0;
+    gap: 0.75rem;
 }
-.pp-procedimento-list p {
-    margin: 0;
-    padding-top: 0.25rem;
-    line-height: 1.6;
+.pp-video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; 
+    height: 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+.pp-video-wrapper iframe {
+   position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
 }
 
-.pp-anotacoes-textarea {
+.pp-edit-input, .pp-edit-textarea, .pp-edit-input-title, .pp-edit-input-meta {
     width: 100%;
-    min-height: 200px;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+.pp-edit-input:focus, .pp-edit-textarea:focus, .pp-edit-input-title:focus, .pp-edit-input-meta:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.1);
+}
+.pp-edit-input-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.pp-edit-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+.pp-pratica-meta > .pp-edit-input-meta {
+    font-size: 1rem;
+    padding: 0.5rem;
+}
+
+.pp-comments-section {
+    margin-top: 2rem;
+}
+.pp-comment-input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+.pp-comment-input-area .action-button {
+    align-self: flex-end;
+}
+.pp-comment-textarea {
+    width: 100%;
+    min-height: 80px;
     padding: 1rem;
     border-radius: 0.5rem;
     border: 1px solid var(--border-color);
@@ -161,47 +174,45 @@
     font-family: inherit;
     resize: vertical;
 }
-.pp-anotacoes-textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.1);
-}
-
-.pp-section-title-icon {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--text-color);
-}
-.pp-apoio-list {
-    list-style: disc;
-    padding-left: 1.5rem;
-    margin: 0;
+.pp-comments-list {
+    margin-top: 2rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1.5rem;
+}
+.pp-comment-item {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+.pp-comment-content {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+.pp-comment-meta {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
     color: var(--text-light);
 }
-.pp-apoio-list li::marker {
-    color: var(--primary-color);
+.pp-comment-meta strong {
+    color: var(--text-color);
+    font-weight: 600;
 }
 
-.pp-seguranca-card {
-    border-left: 4px solid #f87171;
-}
-.pp-seguranca-card .pp-section-title-icon svg {
-    color: #ef4444;
-}
-.pp-descarte-card {
-    border-left: 4px solid #3b82f6;
-}
-.pp-descarte-card .pp-section-title-icon svg {
-    color: #3b82f6;
-}
-.pp-descarte-card p {
-    line-height: 1.6;
-    color: var(--text-light);
+@media print {
+    body * { visibility: hidden; }
+    .printable-area, .printable-area * { visibility: visible; }
+    .printable-area {
+        position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0;
+    }
+    .pp-pratica-actions, .pp-video-wrapper, .pp-comments-section,
+
+    .layout-sidebar, .layout-header {
+        display: none !important;
+    }
+    .pp-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+    }
 }

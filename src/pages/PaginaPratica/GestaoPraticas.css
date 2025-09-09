@@ -1,0 +1,47 @@
+.gp-page-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.gp-page-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+.gp-lista-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+}
+.gp-lista-table th, .gp-lista-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+.gp-lista-table th {
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
+.gp-lista-table td {
+    color: var(--text-color);
+}
+.gp-actions-cell {
+    display: flex;
+    gap: 0.75rem;
+}
+.gp-actions-cell button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-light);
+    padding: 0.25rem;
+}
+.gp-actions-cell button:hover {
+    color: var(--primary-color);
+}

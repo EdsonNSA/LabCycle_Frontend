@@ -6,18 +6,21 @@ import {
     FlaskConical,
     Users,
     BookCopy,
-    LogOut
+    LogOut,
+    ClipboardList
 } from 'lucide-react';
 
 interface SidebarProps {
-  userRole: 'ALUNO' | 'PROFESSOR' | 'TECNICO';
+  userRole: 'ALUNO' | 'PROFESSOR' | 'TECNICO' | 'ADMIN';
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
+
   const linksResponsavel = [
     { to: "/painel-responsavel", icon: LayoutDashboard, label: "Painel Principal" },
     { to: "/gestao-inventario", icon: FlaskConical, label: "Inventário" },
-    { to: "/minhas-turmas", icon: Users, label: "Minhas Turmas" },
+    { to: "/minhas-turmas", icon: Users, label: "Turmas" },
+    { to: "/gestao-praticas", icon: ClipboardList, label: "Gerenciar Práticas" },
     { to: "/catalogo-kits", icon: BookCopy, label: "Catálogo de Kits" },
   ];
 

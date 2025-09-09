@@ -15,11 +15,13 @@ import {
 import { buscarReagentes, criarReagente, atualizarReagente, deletarReagente, Reagente } from '../../services/reagenteService';
 import { buscarTurmas, criarTurma, Turma, DadosCriacaoTurma } from '../../services/turmaService';
 import { buscarAgendamentos, criarAgendamento, atualizarAgendamento, deletarAgendamento, Agendamento, DadosAgendamento } from '../../services/agendamentoService';
+import { buscarPraticas, Pratica } from '../../services/PraticaService';
 
 const PainelResponsavel: React.FC = () => {
     const [reagentes, setReagentes] = useState<Reagente[]>([]);
     const [turmas, setTurmas] = useState<Turma[]>([]);
     const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
+    const [praticas, setPraticas] = useState<Pratica[]>([]);
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState<string | null>(null);
     
@@ -36,14 +38,16 @@ const PainelResponsavel: React.FC = () => {
     const carregarDadosIniciais = async () => {
         try {
             setCarregando(true);
-            const [dadosReagentes, dadosTurmas, dadosAgendamentos] = await Promise.all([
+            const [dadosReagentes, dadosTurmas, dadosAgendamentos, dadosPraticas] = await Promise.all([
                 buscarReagentes(),
                 buscarTurmas(),
-                buscarAgendamentos()
+                buscarAgendamentos(),
+                buscarPraticas()
             ]);
             setReagentes(dadosReagentes);
             setTurmas(dadosTurmas);
             setAgendamentos(dadosAgendamentos.sort((a, b) => new Date(a.dataHora).getTime() - new Date(b.dataHora).getTime()));
+            setPraticas(dadosPraticas);
             setErro(null);
         } catch (err) {
             setErro('Não foi possível carregar os dados do painel. Tente novamente mais tarde.');
@@ -74,6 +78,11 @@ const PainelResponsavel: React.FC = () => {
     
     const abrirModalParaEditarAgendamento = (agendamento: Agendamento) => {
         setAgendamentoEmEdicao(agendamento);
+        setModalAgendamentoAberto(true);
+    };
+    
+    const abrirModalParaCriarAgendamento = () => {
+        setAgendamentoEmEdicao(null);
         setModalAgendamentoAberto(true);
     };
 
@@ -107,16 +116,16 @@ const PainelResponsavel: React.FC = () => {
         }
     };
     
-    const handleSalvarAgendamento = async (dados: DadosAgendamento) => {
+    const handleSalvarAgendamento = async (dados: DadosAgendamento, id?: string) => {
         try {
-            if (agendamentoEmEdicao) {
-                await atualizarAgendamento(agendamentoEmEdicao.id, dados);
+            if (id) {
+                await atualizarAgendamento(id, dados);
             } else {
                 await criarAgendamento(dados);
             }
             await carregarDadosIniciais();
             fecharModalAgendamento();
-            alert(`Prática ${agendamentoEmEdicao ? 'atualizada' : 'agendada'} com sucesso!`);
+            alert(`Prática ${id ? 'atualizada' : 'agendada'} com sucesso!`);
         } catch (error) {
             alert("Não foi possível salvar o agendamento.");
         }
@@ -183,58 +192,58 @@ const PainelResponsavel: React.FC = () => {
                     </div>
                 </div>
                 {isManager && (
-                     <div className="pr-quick-actions">
+                   <div className="pr-quick-actions">
                          <button className="pr-action-button" onClick={abrirModalParaCriarReagente}>
-                            <PlusCircle size={18} />Adicionar Reagente
-                        </button>
-                        <button className="pr-action-button" onClick={() => setModalAgendamentoAberto(true)}>
-                            <CalendarClock size={18} />Agendar Prática
-                        </button>
-                        <button className="pr-action-button" onClick={() => setModalTurmaAberto(true)}>
-                            <Users size={18} />Criar Turma
-                        </button>
+                             <PlusCircle size={18} />Adicionar Reagente
+                         </button>
+                         <button className="pr-action-button" onClick={abrirModalParaCriarAgendamento}>
+                             <CalendarClock size={18} />Agendar Prática
+                         </button>
+                         <button className="pr-action-button" onClick={() => setModalTurmaAberto(true)}>
+                             <Users size={18} />Criar Turma
+                         </button>
                     </div>
                 )}
             </div>
 
             <div className="pr-card pr-inventario-card">
                  <div className="pr-card-header-flex">
-                    <h4 className="pr-card-title">Resumo do Inventário</h4>
-                    <a href="/gestao-inventario" className="pr-card-link">Ver Inventário Completo →</a>
-                </div>
-                <table className="pr-inventory-table">
-                    <thead>
-                        <tr>
-                            <th>Reagente</th>
-                            <th>Quantidade</th>
-                            <th>Status</th>
-                            {isManager && <th>Ações</th>}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {resumoInventario.map(item => (
-                            <tr key={item.id}>
-                                <td>{item.nome}</td>
-                                <td>{`${item.quantidade} ${item.unidade}`}</td>
-                                <td>
-                                    <span className={`pr-status-badge status-${item.status.toLowerCase().replace('_', '-')}`}>
-                                        {item.status.replace('_', ' ')}
-                                    </span>
-                                </td>
-                                {isManager && item.id && (
-                                    <td className="pr-actions-cell">
-                                        <button className="pr-table-action-button" onClick={() => abrirModalParaEditarReagente(item)}>
-                                            <Edit size={16} />
-                                        </button>
-                                        <button className="pr-table-action-button action-delete" onClick={() => item.id && handleDeletarReagente(item.id)}>
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </td>
-                                )}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                     <h4 className="pr-card-title">Resumo do Inventário</h4>
+                     <a href="/gestao-inventario" className="pr-card-link">Ver Inventário Completo →</a>
+                 </div>
+                 <table className="pr-inventory-table">
+                     <thead>
+                         <tr>
+                             <th>Reagente</th>
+                             <th>Quantidade</th>
+                             <th>Status</th>
+                             {isManager && <th>Ações</th>}
+                         </tr>
+                     </thead>
+                     <tbody>
+                         {resumoInventario.map(item => (
+                             <tr key={item.id}>
+                                 <td>{item.nome}</td>
+                                 <td>{`${item.quantidade} ${item.unidade}`}</td>
+                                 <td>
+                                     <span className={`pr-status-badge status-${item.status.toLowerCase().replace('_', '-')}`}>
+                                         {item.status.replace('_', ' ')}
+                                     </span>
+                                 </td>
+                                 {isManager && item.id && (
+                                     <td className="pr-actions-cell">
+                                         <button className="pr-table-action-button" onClick={() => abrirModalParaEditarReagente(item)}>
+                                             <Edit size={16} />
+                                         </button>
+                                         <button className="pr-table-action-button action-delete" onClick={() => item.id && handleDeletarReagente(item.id)}>
+                                             <Trash2 size={16} />
+                                         </button>
+                                     </td>
+                                 )}
+                             </tr>
+                         ))}
+                     </tbody>
+                 </table>
             </div>
             
             <div className="pr-card pr-agenda-card">
@@ -252,8 +261,8 @@ const PainelResponsavel: React.FC = () => {
                         <li key={aula.id} className="pr-agenda-item">
                             <div className="pr-agenda-icon-wrapper"><ClipboardList size={20} /></div>
                             <div className="pr-agenda-details">
-                                <p className="pr-agenda-pratica">{aula.nomePratica}</p>
-                                <p className="pr-agenda-disciplina">{aula.nomeDisciplina} - Turma {aula.codigoTurma}</p>
+                                <p className="pr-agenda-pratica">{aula.pratica?.titulo || "Prática não definida"}</p>
+                                <p className="pr-agenda-disciplina">{aula.disciplinaNome} - Turma {aula.turmaCodigo}</p>
                             </div>
                             <div className="pr-agenda-data">{new Date(aula.dataHora).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}h</div>
                              {isManager && (
@@ -283,6 +292,7 @@ const PainelResponsavel: React.FC = () => {
                 <ModalAgendamento
                     agendamento={agendamentoEmEdicao}
                     turmas={turmas}
+                    praticas={praticas}
                     aoFechar={fecharModalAgendamento}
                     aoSalvar={handleSalvarAgendamento}
                 />
@@ -297,6 +307,8 @@ const PainelResponsavel: React.FC = () => {
         </>
     );
 };
+
+
 
 interface ModalReagenteProps {
     reagente: Reagente | null;
@@ -378,32 +390,38 @@ const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, aoFechar, aoSal
 interface ModalAgendamentoProps {
     agendamento: Agendamento | null;
     turmas: Turma[];
+    praticas: Pratica[];
     aoFechar: () => void;
-    aoSalvar: (dados: DadosAgendamento) => void;
+    aoSalvar: (dados: DadosAgendamento, id?: string) => void;
 }
 
-const ModalAgendamento: React.FC<ModalAgendamentoProps> = ({ agendamento, turmas, aoFechar, aoSalvar }) => {
+const ModalAgendamento: React.FC<ModalAgendamentoProps> = ({ agendamento, turmas, praticas, aoFechar, aoSalvar }) => {
     const [turmaId, setTurmaId] = useState('');
-    const [nomePratica, setNomePratica] = useState('');
+    const [praticaId, setPraticaId] = useState('');
     const [dataHora, setDataHora] = useState('');
 
     useEffect(() => {
         if (agendamento) {
-            const turmaAssociada = turmas.find(t => t.codigo === agendamento.codigoTurma && t.nomeDisciplina === agendamento.nomeDisciplina);
+            const turmaAssociada = turmas.find(t => t.codigo === agendamento.turmaCodigo);
             setTurmaId(turmaAssociada?.id || '');
-            setNomePratica(agendamento.nomePratica);
-            const dataFormatada = new Date(new Date(agendamento.dataHora).getTime() + 3 * 60 * 60 * 1000).toISOString().slice(0, 16);
+            setPraticaId(agendamento.pratica.id);
+            const dataLocal = new Date(agendamento.dataHora);
+            const dataFormatada = new Date(dataLocal.getTime() - (dataLocal.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
             setDataHora(dataFormatada);
+        } else {
+            setTurmaId('');
+            setPraticaId('');
+            setDataHora('');
         }
     }, [agendamento, turmas]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!turmaId || !nomePratica || !dataHora) {
+        if (!turmaId || !praticaId || !dataHora) {
             alert('Por favor, preencha todos os campos.');
             return;
         }
-        aoSalvar({ turmaId, nomePratica, dataHora });
+        aoSalvar({ turmaId, praticaId, dataHora }, agendamento?.id);
     };
 
     return (
@@ -416,15 +434,18 @@ const ModalAgendamento: React.FC<ModalAgendamentoProps> = ({ agendamento, turmas
                         <select id="turmaId" value={turmaId} onChange={(e) => setTurmaId(e.target.value)} required>
                             <option value="" disabled>Selecione uma turma</option>
                             {turmas.map(turma => (
-                                <option key={turma.id} value={turma.id}>
-                                    {turma.nomeDisciplina} ({turma.codigo})
-                                </option>
+                                <option key={turma.id} value={turma.id}>{turma.nomeDisciplina} ({turma.codigo})</option>
                             ))}
                         </select>
                     </div>
                     <div className="pr-form-group">
-                        <label htmlFor="nomePratica">Nome da Prática</label>
-                        <input type="text" id="nomePratica" value={nomePratica} onChange={(e) => setNomePratica(e.target.value)} required />
+                        <label htmlFor="praticaId">Prática</label>
+                        <select id="praticaId" value={praticaId} onChange={(e) => setPraticaId(e.target.value)} required>
+                            <option value="" disabled>Selecione uma prática</option>
+                            {praticas.map(pratica => (
+                                <option key={pratica.id} value={pratica.id}>{pratica.titulo}</option>
+                            ))}
+                        </select>
                     </div>
                     <div className="pr-form-group">
                         <label htmlFor="dataHora">Data e Hora</label>

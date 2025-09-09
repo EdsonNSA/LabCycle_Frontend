@@ -9,7 +9,8 @@ import CatalogoKits from './pages/CatalogoKits/CatalogoKits';
 import GestaoInventario from './pages/GestaoInventario/GestaoInventario';
 import ListaTurmas from './pages/ListaTurmas/ListaTurmas';
 import PaginaPratica from './pages/PaginaPratica/PaginaPratica';
-import GerenciarPraticas from './pages/PaginaPratica/GerenciarPraticas';
+import GerenciarPraticas from './pages/PaginaPratica/GerenciarPraticas'; 
+import GestaoPraticas from './pages/PaginaPratica/GestaoPraticas';
 
 
 const App: React.FC = () => {
@@ -24,9 +25,9 @@ const App: React.FC = () => {
                 <Route path="/catalogo-kits" element={<Layout><CatalogoKits /></Layout>} />
                 <Route path="/gestao-inventario" element={<Layout><GestaoInventario /></Layout>} />
                 <Route path="/minhas-turmas" element={<Layout><ListaTurmas /></Layout>} />
-                <Route path="/pagina-pratica" element={<Layout><PaginaPratica /></Layout>} />
                 <Route path="/minhas-turmas/:turmaId/praticas" element={<Layout><GerenciarPraticas /></Layout>} />
-
+                <Route path="/gestao-praticas" element={<Layout><GestaoPraticas /></Layout>} />
+                <Route path="/praticas/:praticaId" element={<Layout><PaginaPratica /></Layout>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

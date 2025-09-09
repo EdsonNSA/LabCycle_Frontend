@@ -1,14 +1,19 @@
+export interface PraticaResumo {
+    id: string;
+    titulo: string;
+}
+
 export interface Agendamento {
     id: string;
-    nomePratica: string;
     dataHora: string;
-    nomeDisciplina: string;
-    codigoTurma: string;
+    turmaCodigo: string;
+    disciplinaNome: string;
+    pratica: PraticaResumo;
 }
 
 export interface DadosAgendamento {
     turmaId: string;
-    nomePratica: string;
+    praticaId: string;
     dataHora: string;
 }
 
