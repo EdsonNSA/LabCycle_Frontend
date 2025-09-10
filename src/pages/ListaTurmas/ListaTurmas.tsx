@@ -114,7 +114,7 @@ const ListaTurmas: React.FC = () => {
                         </div>
                         <div className="lt-turma-card-footer">
                             <button className="lt-turma-button" onClick={() => navigate(`/minhas-turmas/${turma.id}/praticas`)}>
-                                Gerenciar Práticas
+                                Práticas
                             </button>
                         </div>
                     </div>

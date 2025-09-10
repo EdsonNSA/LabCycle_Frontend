@@ -1,29 +1,36 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 import { NavigateFunction } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
 interface LoginProps {
-  event: React.FormEvent<HTMLFormElement>;
-  email: string;
-  password: string;
-  navigate: NavigateFunction;
+    event: React.FormEvent<HTMLFormElement>;
+    email: string;
+    password: string;
+    navigate: NavigateFunction;
 }
 
 interface RegisterProps {
-  event: React.FormEvent<HTMLFormElement>;
-  name: string;
-  email: string;
-  cpf: string;
-  password: string;
-  confirmPassword: string;
-  role: string;
-  setPasswordErrors: (errors: string[]) => void;
-  navigate: NavigateFunction;
+    event: React.FormEvent<HTMLFormElement>;
+    name: string;
+    email: string;
+    cpf: string;
+    password: string;
+    confirmPassword: string;
+    role: string;
+    setPasswordErrors: (errors: string[]) => void;
+    navigate: NavigateFunction;
+}
+
+interface DecodedToken {
+    sub: string;
+    role: string;
+    iat: number;
+    exp: number;
 }
 
 const getRoleFromToken = (token: string): string => {
     try {
-        const decoded: { role: string } = jwtDecode(token);
+        const decoded: DecodedToken = jwtDecode(token);
         return decoded.role;
     } catch (error) {
         console.error("Token inválido:", error);
@@ -38,7 +45,7 @@ export const handleLogin = async ({ event, email, password, navigate }: LoginPro
     const response = await fetch('http://localhost:8080/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({email, password }),
     });
 
     if (!response.ok) {
@@ -46,16 +53,15 @@ export const handleLogin = async ({ event, email, password, navigate }: LoginPro
     }
 
     const data = await response.json();
-    const userRole = getRoleFromToken(data.token);
+    const roleFromToken = getRoleFromToken(data.token);
+    const userRole = roleFromToken === 'USER' ? 'ALUNO' : roleFromToken;
 
     localStorage.setItem('authToken', data.token);
     localStorage.setItem('userRole', userRole);
     localStorage.setItem('userEmail', email);
 
-    //alert('Login realizado com sucesso!');
-
     switch (userRole) {
-        case 'USER':
+        case 'ALUNO':
             navigate('/painel-aluno');
             break;
         case 'ADMIN':
@@ -71,14 +77,14 @@ export const handleLogin = async ({ event, email, password, navigate }: LoginPro
 };
 
 export const handleRegister = async ({
-  event,
-  name,
-  email,
-  cpf,
-  password,
-  confirmPassword,
-  role,
-  navigate
+    event,
+    name,
+    email,
+    cpf,
+    password,
+    confirmPassword,
+    role,
+    navigate
 }: RegisterProps): Promise<void> => {
   event.preventDefault();
 
@@ -96,20 +102,21 @@ export const handleRegister = async ({
   }
   
   try {
-    const response = await fetch('http://localhost:8080/auth/register', {
+    const response = await fetch('http://localhost:8080/auth/registrar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ name, login: email, senha: password, role: role === 'ALUNO' ? 'USER' : role }),
     });
 
     if (!response.ok) {
-        throw new Error('O email informado já pode estar em uso.');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'O email informado já pode estar em uso.');
     }
 
     alert('Cadastro realizado com sucesso! Você será redirecionado para a tela de login.');
     navigate('/login');
   } catch (error) {
     console.error('Erro no cadastro:', error);
-    alert('Falha no cadastro. Tente novamente.');
+    alert(`Falha no cadastro. ${error instanceof Error ? error.message : 'Tente novamente.'}`);
   }
 };

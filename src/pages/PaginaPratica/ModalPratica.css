@@ -17,9 +17,9 @@
     border-radius: 0.75rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     width: 90%;
-    max-width: 700px; /* Um pouco maior para caber o formulário grande */
+    max-width: 700px;
     max-height: 90vh;
-    overflow-y: auto; /* Adiciona barra de rolagem se o conteúdo for grande */
+    overflow-y: auto;
 }
 
 .modal-content h2 {
@@ -55,10 +55,11 @@
     min-height: 80px;
 }
 
-.modal-content .form-group small {
-    margin-top: 0.25rem;
-    font-size: 0.8rem;
-    color: #64748b;
+.modal-content .form-group input:focus,
+.modal-content .form-group textarea:focus {
+    outline: none;
+    border-color: #2a5b4a;
+    box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.1);
 }
 
 .modal-actions {
@@ -87,4 +88,104 @@
     background-color: #f1f5f9;
     color: #334155;
     border: 1px solid #e2e8f0;
+}
+
+.form-group-with-tip {
+    position: relative;
+}
+
+.video-tip {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #334155;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+.video-tip p {
+    margin: 0 0 0.5rem 0;
+}
+.video-tip code {
+    background-color: #475569;
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+}
+
+.label-with-help {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.help-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+}
+.help-button:hover {
+    color: #64748b;
+}
+
+
+.dynamic-list-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.dynamic-list-item input {
+    flex-grow: 1;
+}
+
+.dynamic-list-item .remove-button {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.dynamic-list-item .remove-button:hover {
+    background-color: #fee2e2;
+}
+
+.add-button {
+    background: none;
+    border: 1px dashed #cbd5e1;
+    color: #64748b;
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.add-button:hover {
+    background-color: #f8fafc;
+    border-color: #2a5b4a;
+    color: #2a5b4a;
 }

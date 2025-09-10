@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
 import './Layout.css';
-import { Bell, PlusCircle } from 'lucide-react';
+import { Bell } from 'lucide-react';
 
 const userInfo = {
     nome: 'Edson Nunes',
@@ -14,13 +14,10 @@ const pageConfig: { [key: string]: { title: string; action?: React.ReactNode } }
     '/painel-aluno': { title: 'Painel do Aluno' },
     '/painel-responsavel': { title: 'Painel do Responsável' },
     '/catalogo-kits': { title: 'Catálogo de Kits' },
-    '/gestao-inventario': { 
-        title: 'Gestão de Inventário',
-    },
-    '/minhas-turmas': { 
-        title: 'Minhas Turmas',
-    },
-    '/pagina-pratica': { title: 'Detalhes da Prática' },
+    '/gestao-inventario': { title: 'Gestão de Inventário' },
+    '/minhas-turmas': { title: 'Minhas Turmas' },
+    '/gestao-praticas': { title: 'Gerenciar Práticas' },
+    '/praticas/:praticaId': { title: 'Detalhes da Prática' },
 };
 
 interface LayoutProps {
@@ -30,7 +27,9 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     const location = useLocation();
     const config = pageConfig[location.pathname] || { title: 'LabCycle' };
-    const userRole = (localStorage.getItem('userRole') || 'PROFESSOR') as 'ALUNO' | 'PROFESSOR' | 'TECNICO';
+    const userRole = (localStorage.getItem('userRole') || 'PROFESSOR') as 'ALUNO' | 'PROFESSOR' | 'TECNICO' | 'ADMIN';
+
+    console.log("Verificando userRole no Layout:", userRole);
 
     return (
         <div className="layout-container">

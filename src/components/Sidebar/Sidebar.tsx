@@ -15,7 +15,6 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
-
   const linksResponsavel = [
     { to: "/painel-responsavel", icon: LayoutDashboard, label: "Painel Principal" },
     { to: "/gestao-inventario", icon: FlaskConical, label: "Inventário" },
@@ -50,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
         </ul>
       </nav>
       <div className="sidebar-footer">
-        <NavLink to="/login" className="nav-link">
+        <NavLink to="/login" className="nav-link" onClick={() => localStorage.clear()}>
           <LogOut className="nav-icon" />
           Sair
         </NavLink>
