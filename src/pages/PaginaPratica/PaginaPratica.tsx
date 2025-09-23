@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './PaginaPratica.css';
-import {
-    Users, Clock, BarChart, Check, List, Trash2, ShieldAlert, Printer, Edit, Save, MessageSquare, Send
+import { Clock, BarChart, Check, List, Trash2, ShieldAlert, Printer, Edit, Save, MessageSquare, Send
 } from 'lucide-react';
 import { buscarPraticaPorId, Pratica, atualizarPratica } from '../../services/PraticaService';
 import { buscarComentarios, criarComentario, Comentario } from '../../services/comentarioService';

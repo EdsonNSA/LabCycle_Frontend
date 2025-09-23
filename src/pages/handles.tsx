@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React from 'react';
 import { NavigateFunction } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
@@ -39,41 +39,41 @@ const getRoleFromToken = (token: string): string => {
 };
 
 export const handleLogin = async ({ event, email, password, navigate }: LoginProps): Promise<void> => {
-  event.preventDefault();
+    event.preventDefault();
 
-  try {
-    const response = await fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({email, password }),
-    });
+    try {
+        const response = await fetch('http://localhost:8080/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
 
-    if (!response.ok) {
-        throw new Error('Email ou senha inválidos.');
+        if (!response.ok) {
+            throw new Error('Email ou senha inválidos.');
+        }
+
+        const data = await response.json();
+        const roleFromToken = getRoleFromToken(data.token);
+        const userRole = roleFromToken === 'USER' ? 'ALUNO' : roleFromToken;
+
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('userRole', userRole);
+        localStorage.setItem('userEmail', email);
+
+        switch (userRole) {
+            case 'ALUNO':
+                navigate('/painel-aluno');
+                break;
+            case 'ADMIN':
+                navigate('/painel-responsavel');
+                break;
+            default:
+                navigate('/');
+        }
+    } catch (error) {
+        console.error('Erro no login:', error);
+        alert('Falha no login. Verifique suas credenciais.');
     }
-
-    const data = await response.json();
-    const roleFromToken = getRoleFromToken(data.token);
-    const userRole = roleFromToken === 'USER' ? 'ALUNO' : roleFromToken;
-
-    localStorage.setItem('authToken', data.token);
-    localStorage.setItem('userRole', userRole);
-    localStorage.setItem('userEmail', email);
-
-    switch (userRole) {
-        case 'ALUNO':
-            navigate('/painel-aluno');
-            break;
-        case 'ADMIN':
-            navigate('/painel-responsavel');
-            break;
-        default:
-            navigate('/');
-    }
-  } catch (error) {
-    console.error('Erro no login:', error);
-    alert('Falha no login. Verifique suas credenciais.');
-  }
 };
 
 export const handleRegister = async ({
@@ -84,39 +84,40 @@ export const handleRegister = async ({
     password,
     confirmPassword,
     role,
+    setPasswordErrors: _setPasswordErrors, // <-- Ajuste aqui
     navigate
 }: RegisterProps): Promise<void> => {
-  event.preventDefault();
+    event.preventDefault();
 
-  if (password !== confirmPassword) {
-    alert('As senhas não coincidem.');
-    return;
-  }
-  if (cpf.replace(/\D/g, '').length < 11) {
-    alert('O CPF está incorreto!');
-    return;
-  }
-  if (!name.trim() || !email.trim() || !role) {
-    alert('Por favor, preencha todos os campos obrigatórios.');
-    return;
-  }
-  
-  try {
-    const response = await fetch('http://localhost:8080/auth/registrar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, login: email, senha: password, role: role === 'ALUNO' ? 'USER' : role }),
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'O email informado já pode estar em uso.');
+    if (password !== confirmPassword) {
+        alert('As senhas não coincidem.');
+        return;
     }
+    if (cpf.replace(/\D/g, '').length < 11) {
+        alert('O CPF está incorreto!');
+        return;
+    }
+    if (!name.trim() || !email.trim() || !role) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
+    
+    try {
+        const response = await fetch('http://localhost:8080/auth/registrar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, login: email, senha: password, role: role === 'ALUNO' ? 'USER' : role }),
+        });
 
-    alert('Cadastro realizado com sucesso! Você será redirecionado para a tela de login.');
-    navigate('/login');
-  } catch (error) {
-    console.error('Erro no cadastro:', error);
-    alert(`Falha no cadastro. ${error instanceof Error ? error.message : 'Tente novamente.'}`);
-  }
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'O email informado já pode estar em uso.');
+        }
+
+        alert('Cadastro realizado com sucesso! Você será redirecionado para a tela de login.');
+        navigate('/login');
+    } catch (error) {
+        console.error('Erro no cadastro:', error);
+        alert(`Falha no cadastro. ${error instanceof Error ? error.message : 'Tente novamente.'}`);
+    }
 };

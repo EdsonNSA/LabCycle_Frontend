@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './PainelResponsavel.css';
 import {
-    Bell,
     PlusCircle,
     AlertTriangle,
     CalendarClock,

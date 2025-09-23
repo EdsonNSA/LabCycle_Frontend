@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent } from 'react'; 
 import './login.css';
 import { useNavigate } from 'react-router-dom';
 import { handleLogin } from '../handles';
@@ -56,7 +56,7 @@ const Login: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <span onClick={togglePasswordVisibility} className="input-icon">
+          <span onClick={togglePasswordVisibility} className="input-icon" role="button" tabIndex={0}>
             {passwordShown ? <IconEyeSlash /> : <IconEye />}
           </span>
         </div>
@@ -64,8 +64,20 @@ const Login: React.FC = () => {
         <button type="submit" className="login-button">Entrar</button>
 
         <div className="links-container">
-          <a onClick={() => alert('Funcionalidade a ser implementada!')} className="link">Esqueceu sua senha?</a>
-          <a onClick={() => navigate('/register')} className="link">Cadastre-se</a>
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => alert('Funcionalidade a ser implementada!')}
+          >
+            Esqueceu sua senha?
+          </button>
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => navigate('/register')}
+          >
+            Cadastre-se
+          </button>
         </div>
       </form>
     </div>

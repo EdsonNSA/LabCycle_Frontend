@@ -95,9 +95,21 @@ const PainelAluno: React.FC = () => {
                     <div className="pa-card pa-biblioteca-card">
                         <h4 className="pa-card-title">Biblioteca de Recursos</h4>
                         <ul>
-                            <li><a href="#"><ShieldCheck size={16} />Guia de Segurança</a></li>
-                            <li><a href="#"><Beaker size={16} />Técnicas de Pipetagem</a></li>
-                            <li><a href="#"><BookOpen size={16} />Glossário de Termos</a></li>
+                            <li>
+                                <button className="link-button" disabled>
+                                    <ShieldCheck size={16} />Guia de Segurança
+                                </button>
+                            </li>
+                            <li>
+                                <button className="link-button" disabled>
+                                    <Beaker size={16} />Técnicas de Pipetagem
+                                </button>
+                            </li>
+                            <li>
+                                <button className="link-button" disabled>
+                                    <BookOpen size={16} />Glossário de Termos
+                                </button>
+                            </li>
                         </ul>
                     </div>
                 </div>

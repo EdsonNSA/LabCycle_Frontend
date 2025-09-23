@@ -130,19 +130,22 @@ function Register() {
           id='confirmSenhaReg'
           type="password"
           name="confirmarSenha"
-          placeholder="Confirme sua senha"
           className="register-input"
           value={formulario.confirmarSenha}
           onChange={aoAlterarCampo}
           required
         />
-
-        <button type="submit" className="register-button">Cadastrar</button>
-        
-        <p className="LoginLink" onClick={() => navigate('/login')}>
-          Já tem uma conta? Faça login
-        </p>
-
+        <div className="links-container">
+          <button type="submit" className="register-button">Cadastrar</button>
+          
+          <button 
+            type="button" 
+            className="link-button"
+            onClick={() => navigate('/login')}
+          >
+            Já tem uma conta? Faça login
+          </button>
+        </div>
       </form>
     </div>
   );

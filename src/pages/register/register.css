@@ -25,7 +25,7 @@ body {
 
 .register-container {
   text-align: center;
-  padding: 40px;
+  padding: 35px;
   background-color: var(--card-background);
   border-radius: 20px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -101,15 +101,23 @@ select.register-input:focus {
   transform: translateY(-2px);
 }
 
-.LoginLink {
-  margin-top: 20px;
+.LoginLink,
+.ForgotPasswordLink,
+.RegisterLink {
+  margin-top: 15px;
   font-size: 0.9rem;
   color: var(--primary-color);
   cursor: pointer;
   text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
 }
 
-.LoginLink:hover {
+.LoginLink:hover,
+.ForgotPasswordLink:hover,
+.RegisterLink:hover {
   text-decoration: underline;
 }
 
