@@ -73,7 +73,7 @@ const kitsData: Kit[] = [
 
 
 const CatalogoKits: React.FC = () => {
-    const [kits, _setKits] = useState(kitsData);
+    const [kits] = useState(kitsData);
     const [termoBusca, setTermoBusca] = useState('');
 
     const [modalOrcamentoAberto, setModalOrcamentoAberto] = useState(false);

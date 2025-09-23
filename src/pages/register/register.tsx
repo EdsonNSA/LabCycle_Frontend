@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState} from 'react';
 import './register.css';
 import { useNavigate } from 'react-router-dom';
 import { handleRegister } from '../handles';
