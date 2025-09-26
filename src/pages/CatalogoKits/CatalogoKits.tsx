@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './CatalogoKits.css';
 import {
-    Search, ChevronDown, Package, Info, ShoppingCart
+    Search, Package, Info, ShoppingCart
 } from 'lucide-react';
 import ModalOrcamento from './ModalOrcamento';
 import ModalDetalhes from './ModalDetalhes';
@@ -75,11 +75,15 @@ const kitsData: Kit[] = [
 const CatalogoKits: React.FC = () => {
     const [kits] = useState(kitsData);
     const [termoBusca, setTermoBusca] = useState('');
+    
+    const [filtroPublico, setFiltroPublico] = useState('');
 
     const [modalOrcamentoAberto, setModalOrcamentoAberto] = useState(false);
     const [kitSelecionado, setKitSelecionado] = useState<Kit | null>(null);
 
     const [modalDetalhesAberto, setModalDetalhesAberto] = useState(false);
+    
+    const publicosUnicos = [...new Set(kitsData.map(kit => kit.publicoAlvo))];
 
     const handleAbrirModalOrcamento = (kit: Kit) => {
         setKitSelecionado(kit);
@@ -97,9 +101,13 @@ const CatalogoKits: React.FC = () => {
         setModalDetalhesAberto(false);
     };
 
-    const kitsFiltrados = kits.filter(kit => 
-        kit.moduloTematico.toLowerCase().includes(termoBusca.toLowerCase())
-    );
+    const kitsFiltrados = kits
+        .filter(kit => 
+            kit.moduloTematico.toLowerCase().includes(termoBusca.toLowerCase())
+        )
+        .filter(kit => 
+            filtroPublico ? kit.publicoAlvo === filtroPublico : true
+        );
 
     return (
         <>
@@ -115,9 +123,18 @@ const CatalogoKits: React.FC = () => {
                     />
                 </div>
                 <div className="ck-filters-wrapper">
-                    <button className="ck-filter-button">
-                        Formato do Kit <ChevronDown size={16} />
-                    </button>
+                    <select 
+                        className="ck-filter-select" 
+                        value={filtroPublico}
+                        onChange={(e) => setFiltroPublico(e.target.value)}
+                        required
+                    >
+                        <option value="" disabled>Filtrar por público</option>
+                        <option value="">Todos os Públicos</option>
+                        {publicosUnicos.map(publico => (
+                            <option key={publico} value={publico}>{publico}</option>
+                        ))}
+                    </select>
                 </div>
             </div>
 

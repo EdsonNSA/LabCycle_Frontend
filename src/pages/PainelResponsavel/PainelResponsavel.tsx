@@ -9,7 +9,8 @@ import {
     Edit,
     Trash2,
     ChevronDown,
-    ChevronUp
+    ChevronUp,
+    X
 } from 'lucide-react';
 import { buscarReagentes, criarReagente, atualizarReagente, deletarReagente, Reagente } from '../../services/reagenteService';
 import { buscarTurmas, criarTurma, Turma, DadosCriacaoTurma } from '../../services/turmaService';
@@ -206,43 +207,43 @@ const PainelResponsavel: React.FC = () => {
             </div>
 
             <div className="pr-card pr-inventario-card">
-                 <div className="pr-card-header-flex">
-                     <h4 className="pr-card-title">Resumo do Inventário</h4>
-                     <a href="/gestao-inventario" className="pr-card-link">Ver Inventário Completo →</a>
-                 </div>
-                 <table className="pr-inventory-table">
-                     <thead>
-                         <tr>
-                             <th>Reagente</th>
-                             <th>Quantidade</th>
-                             <th>Status</th>
-                             {isManager && <th>Ações</th>}
-                         </tr>
-                     </thead>
-                     <tbody>
-                         {resumoInventario.map(item => (
-                             <tr key={item.id}>
-                                 <td>{item.nome}</td>
-                                 <td>{`${item.quantidade} ${item.unidade}`}</td>
-                                 <td>
-                                     <span className={`pr-status-badge status-${item.status.toLowerCase().replace('_', '-')}`}>
-                                         {item.status.replace('_', ' ')}
-                                     </span>
-                                 </td>
-                                 {isManager && item.id && (
-                                     <td className="pr-actions-cell">
-                                         <button className="pr-table-action-button" onClick={() => abrirModalParaEditarReagente(item)}>
-                                             <Edit size={16} />
-                                         </button>
-                                         <button className="pr-table-action-button action-delete" onClick={() => item.id && handleDeletarReagente(item.id)}>
-                                             <Trash2 size={16} />
-                                         </button>
-                                     </td>
-                                 )}
+                   <div className="pr-card-header-flex">
+                         <h4 className="pr-card-title">Resumo do Inventário</h4>
+                         <a href="/gestao-inventario" className="pr-card-link">Ver Inventário Completo →</a>
+                   </div>
+                   <table className="pr-inventory-table">
+                         <thead>
+                             <tr>
+                                 <th>Reagente</th>
+                                 <th>Quantidade</th>
+                                 <th>Status</th>
+                                 {isManager && <th>Ações</th>}
                              </tr>
-                         ))}
-                     </tbody>
-                 </table>
+                         </thead>
+                         <tbody>
+                             {resumoInventario.map(item => (
+                                 <tr key={item.id}>
+                                     <td>{item.nome}</td>
+                                     <td>{`${item.quantidade} ${item.unidade}`}</td>
+                                     <td>
+                                         <span className={`pr-status-badge status-${item.status.toLowerCase().replace('_', '-')}`}>
+                                             {item.status.replace('_', ' ')}
+                                         </span>
+                                     </td>
+                                     {isManager && item.id && (
+                                         <td className="pr-actions-cell">
+                                             <button className="pr-table-action-button" onClick={() => abrirModalParaEditarReagente(item)}>
+                                                 <Edit size={16} />
+                                             </button>
+                                             <button className="pr-table-action-button action-delete" onClick={() => item.id && handleDeletarReagente(item.id)}>
+                                                 <Trash2 size={16} />
+                                             </button>
+                                         </td>
+                                     )}
+                                 </tr>
+                             ))}
+                         </tbody>
+                   </table>
             </div>
             
             <div className="pr-card pr-agenda-card">
@@ -264,16 +265,16 @@ const PainelResponsavel: React.FC = () => {
                                 <p className="pr-agenda-disciplina">{aula.disciplinaNome} - Turma {aula.turmaCodigo}</p>
                             </div>
                             <div className="pr-agenda-data">{new Date(aula.dataHora).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}h</div>
-                             {isManager && (
-                                <div className="pr-agenda-actions">
-                                    <button className="pr-table-action-button" onClick={() => abrirModalParaEditarAgendamento(aula)}>
-                                        <Edit size={16} />
-                                    </button>
-                                    <button className="pr-table-action-button action-delete" onClick={() => handleDeletarAgendamento(aula.id)}>
-                                        <Trash2 size={16} />
-                                    </button>
-                                </div>
-                            )}
+                               {isManager && (
+                                   <div className="pr-agenda-actions">
+                                       <button className="pr-table-action-button" onClick={() => abrirModalParaEditarAgendamento(aula)}>
+                                           <Edit size={16} />
+                                       </button>
+                                       <button className="pr-table-action-button action-delete" onClick={() => handleDeletarAgendamento(aula.id)}>
+                                           <Trash2 size={16} />
+                                       </button>
+                                   </div>
+                               )}
                         </li>
                     ))}
                 </ul>
@@ -307,8 +308,6 @@ const PainelResponsavel: React.FC = () => {
     );
 };
 
-
-
 interface ModalReagenteProps {
     reagente: Reagente | null;
     aoFechar: () => void;
@@ -321,13 +320,24 @@ const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, aoFechar, aoSal
         numeroCas: reagente?.numeroCas || '',
         quantidade: reagente?.quantidade || 0,
         unidade: reagente?.unidade || 'mL',
-        dataValidade: reagente?.dataValidade || '',
+        dataValidade: reagente?.dataValidade ? reagente.dataValidade.split('T')[0] : '',
         localizacao: reagente?.localizacao || '',
         status: reagente?.status || 'OK',
     });
+    
+    const hoje = new Date().toISOString().split('T')[0];
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
+        let { name, value } = e.target;
+
+        if (name === 'dataValidade' && value) {
+            let [ano] = value.split('-');
+            if (ano.length > 4) {
+                ano = ano.slice(0, 4);
+                value = ano + value.substring(ano.length);
+            }
+        }
+
         setFormData(prev => ({ ...prev, [name]: name === 'quantidade' ? parseFloat(value) : value }));
     };
 
@@ -340,41 +350,55 @@ const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, aoFechar, aoSal
         <div className="pr-modal-overlay">
             <div className="pr-modal-content">
                 <form onSubmit={handleSubmit}>
-                    <h2>{reagente ? 'Editar Reagente' : 'Adicionar Novo Reagente'}</h2>
+                    <div className="pr-modal-header">
+                        <h2>{reagente ? 'Editar Reagente' : 'Adicionar Novo Reagente'}</h2>
+                        <button type="button" className="pr-modal-close-button" onClick={aoFechar}><X size={20}/></button>
+                    </div>
                     
-                    <div className="pr-form-group">
-                        <label htmlFor="nome">Nome do Reagente</label>
-                        <input type="text" id="nome" name="nome" value={formData.nome} onChange={handleInputChange} required />
-                    </div>
-                    <div className="pr-form-group">
-                        <label htmlFor="numeroCas">Número CAS</label>
-                        <input type="text" id="numeroCas" name="numeroCas" value={formData.numeroCas} onChange={handleInputChange} required />
-                    </div>
-                    <div className="pr-form-row">
+                    <div className="pr-modal-body">
                         <div className="pr-form-group">
-                            <label htmlFor="quantidade">Quantidade</label>
-                            <input type="number" step="0.01" id="quantidade" name="quantidade" value={formData.quantidade} onChange={handleInputChange} required />
+                            <label htmlFor="nome">Nome do Reagente</label>
+                            <input type="text" id="nome" name="nome" value={formData.nome} onChange={handleInputChange} required />
                         </div>
                         <div className="pr-form-group">
-                            <label htmlFor="unidade">Unidade</label>
-                            <select id="unidade" name="unidade" value={formData.unidade} onChange={handleInputChange}>
-                                <option value="mL">mL</option><option value="L">L</option><option value="g">g</option><option value="kg">kg</option>
+                            <label htmlFor="numeroCas">Número CAS</label>
+                            <input type="text" id="numeroCas" name="numeroCas" value={formData.numeroCas} onChange={handleInputChange} required />
+                        </div>
+                        <div className="pr-form-row">
+                            <div className="pr-form-group">
+                                <label htmlFor="quantidade">Quantidade</label>
+                                <input type="number" step="0.01" id="quantidade" name="quantidade" value={formData.quantidade} onChange={handleInputChange} required />
+                            </div>
+                            <div className="pr-form-group">
+                                <label htmlFor="unidade">Unidade</label>
+                                <select id="unidade" name="unidade" value={formData.unidade} onChange={handleInputChange}>
+                                    <option value="mL">mL</option><option value="L">L</option><option value="g">g</option><option value="kg">kg</option>
+                                </select>
+                            </div>
+                        </div>
+                         <div className="pr-form-group">
+                            <label htmlFor="dataValidade">Data de Validade</label>
+                            <input 
+                                type="date" 
+                                id="dataValidade" 
+                                name="dataValidade" 
+                                value={formData.dataValidade} 
+                                onChange={handleInputChange} 
+                                min={hoje}
+                                max="9999-12-31"
+                                required 
+                            />
+                        </div>
+                        <div className="pr-form-group">
+                            <label htmlFor="localizacao">Localização</label>
+                            <input type="text" id="localizacao" name="localizacao" value={formData.localizacao} onChange={handleInputChange} required />
+                        </div>
+                        <div className="pr-form-group">
+                            <label htmlFor="status">Status</label>
+                            <select id="status" name="status" value={formData.status} onChange={handleInputChange}>
+                                <option value="OK">OK</option><option value="BAIXO_ESTOQUE">Baixo Estoque</option><option value="VENCENDO">Vencendo</option><option value="VENCIDO">Vencido</option>
                             </select>
                         </div>
-                    </div>
-                     <div className="pr-form-group">
-                        <label htmlFor="dataValidade">Data de Validade</label>
-                        <input type="date" id="dataValidade" name="dataValidade" value={formData.dataValidade} onChange={handleInputChange} required />
-                    </div>
-                    <div className="pr-form-group">
-                        <label htmlFor="localizacao">Localização</label>
-                        <input type="text" id="localizacao" name="localizacao" value={formData.localizacao} onChange={handleInputChange} required />
-                    </div>
-                    <div className="pr-form-group">
-                        <label htmlFor="status">Status</label>
-                        <select id="status" name="status" value={formData.status} onChange={handleInputChange}>
-                            <option value="OK">OK</option><option value="BAIXO_ESTOQUE">Baixo Estoque</option><option value="VENCENDO">Vencendo</option><option value="VENCIDO">Vencido</option>
-                        </select>
                     </div>
                     <div className="pr-modal-actions">
                         <button type="button" className="pr-button-secondary" onClick={aoFechar}>Cancelar</button>
@@ -422,33 +446,60 @@ const ModalAgendamento: React.FC<ModalAgendamentoProps> = ({ agendamento, turmas
         }
         aoSalvar({ turmaId, praticaId, dataHora }, agendamento?.id);
     };
+    
+    const agora = new Date();
+    agora.setMinutes(agora.getMinutes() - agora.getTimezoneOffset());
+    const agoraString = agora.toISOString().slice(0, 16);
 
     return (
         <div className="pr-modal-overlay">
             <div className="pr-modal-content">
                 <form onSubmit={handleSubmit}>
-                    <h2>{agendamento ? 'Editar Agendamento' : 'Agendar Nova Prática'}</h2>
-                    <div className="pr-form-group">
-                        <label htmlFor="turmaId">Turma</label>
-                        <select id="turmaId" value={turmaId} onChange={(e) => setTurmaId(e.target.value)} required>
-                            <option value="" disabled>Selecione uma turma</option>
-                            {turmas.map(turma => (
-                                <option key={turma.id} value={turma.id}>{turma.nomeDisciplina} ({turma.codigo})</option>
-                            ))}
-                        </select>
+                     <div className="pr-modal-header">
+                        <h2>{agendamento ? 'Editar Agendamento' : 'Agendar Nova Prática'}</h2>
+                        <button type="button" className="pr-modal-close-button" onClick={aoFechar}><X size={20}/></button>
                     </div>
-                    <div className="pr-form-group">
-                        <label htmlFor="praticaId">Prática</label>
-                        <select id="praticaId" value={praticaId} onChange={(e) => setPraticaId(e.target.value)} required>
-                            <option value="" disabled>Selecione uma prática</option>
-                            {praticas.map(pratica => (
-                                <option key={pratica.id} value={pratica.id}>{pratica.titulo}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="pr-form-group">
-                        <label htmlFor="dataHora">Data e Hora</label>
-                        <input type="datetime-local" id="dataHora" value={dataHora} onChange={(e) => setDataHora(e.target.value)} required />
+                    <div className="pr-modal-body">
+                        <div className="pr-form-group">
+                            <label htmlFor="turmaId">Turma</label>
+                            <select id="turmaId" value={turmaId} onChange={(e) => setTurmaId(e.target.value)} required>
+                                <option value="" disabled>Selecione uma turma</option>
+                                {turmas.map(turma => (
+                                    <option key={turma.id} value={turma.id}>{turma.nomeDisciplina} ({turma.codigo})</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="pr-form-group">
+                            <label htmlFor="praticaId">Prática</label>
+                            <select id="praticaId" value={praticaId} onChange={(e) => setPraticaId(e.target.value)} required>
+                                <option value="" disabled>Selecione uma prática</option>
+                                {praticas.map(pratica => (
+                                    <option key={pratica.id} value={pratica.id}>{pratica.titulo}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="pr-form-group">
+                            <label htmlFor="dataHora">Data e Hora</label>
+                            <input 
+                                type="datetime-local" 
+                                id="dataHora" 
+                                value={dataHora} 
+                                onChange={(e) => {
+                                    let value = e.target.value;
+                                    if (value) {
+                                        let [ano] = value.split('-');
+                                        if (ano.length > 4) {
+                                            ano = ano.slice(0, 4);
+                                            value = ano + value.substring(ano.length);
+                                        }
+                                    }
+                                    setDataHora(value);
+                                }}
+                                min={agoraString}
+                                max="9999-12-31T23:59"
+                                required 
+                            />
+                        </div>
                     </div>
                     <div className="pr-modal-actions">
                         <button type="button" className="pr-button-secondary" onClick={aoFechar}>Cancelar</button>
@@ -487,23 +538,28 @@ const ModalNovaTurma: React.FC<ModalNovaTurmaProps> = ({ aoFechar, aoSalvar }) =
         <div className="pr-modal-overlay">
             <div className="pr-modal-content">
                 <form onSubmit={handleSubmit}>
-                    <h2>Criar Nova Turma</h2>
-                    <div className="pr-form-group">
-                        <label htmlFor="nomeDisciplina">Nome da Disciplina</label>
-                        <input type="text" id="nomeDisciplina" name="nomeDisciplina" value={formData.nomeDisciplina} onChange={handleInputChange} required />
+                     <div className="pr-modal-header">
+                        <h2>Criar Nova Turma</h2>
+                        <button type="button" className="pr-modal-close-button" onClick={aoFechar}><X size={20}/></button>
                     </div>
-                    <div className="pr-form-group">
-                        <label htmlFor="codigo">Código da Turma</label>
-                        <input type="text" id="codigo" name="codigo" value={formData.codigo} onChange={handleInputChange} required />
-                    </div>
-                    <div className="pr-form-row">
+                    <div className="pr-modal-body">
                         <div className="pr-form-group">
-                            <label htmlFor="semestre">Semestre</label>
-                            <input type="text" id="semestre" name="semestre" placeholder="Ex: 2025.1" value={formData.semestre} onChange={handleInputChange} required />
+                            <label htmlFor="nomeDisciplina">Nome da Disciplina</label>
+                            <input type="text" id="nomeDisciplina" name="nomeDisciplina" value={formData.nomeDisciplina} onChange={handleInputChange} required />
                         </div>
                         <div className="pr-form-group">
-                            <label htmlFor="numeroAlunos">Nº de Alunos</label>
-                            <input type="number" id="numeroAlunos" name="numeroAlunos" value={formData.numeroAlunos} onChange={handleInputChange} min="0" required />
+                            <label htmlFor="codigo">Código da Turma</label>
+                            <input type="text" id="codigo" name="codigo" value={formData.codigo} onChange={handleInputChange} required />
+                        </div>
+                        <div className="pr-form-row">
+                            <div className="pr-form-group">
+                                <label htmlFor="semestre">Semestre</label>
+                                <input type="text" id="semestre" name="semestre" placeholder="Ex: 2025.1" value={formData.semestre} onChange={handleInputChange} required />
+                            </div>
+                            <div className="pr-form-group">
+                                <label htmlFor="numeroAlunos">Nº de Alunos</label>
+                                <input type="number" id="numeroAlunos" name="numeroAlunos" value={formData.numeroAlunos} onChange={handleInputChange} min="0" required />
+                            </div>
                         </div>
                     </div>
                     <div className="pr-modal-actions">

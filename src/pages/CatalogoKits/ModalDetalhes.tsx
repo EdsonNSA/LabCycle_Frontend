@@ -21,8 +21,8 @@ const ModalDetalhes: React.FC<ModalDetalhesProps> = ({ isOpen, onClose, kit }) =
     if (!isOpen || !kit) return null;
 
     return (
-        <div className="md-modal-overlay" onClick={onClose}>
-            <div className="md-modal-content" onClick={e => e.stopPropagation()}>
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
                 <button onClick={onClose} className="md-close-button">
                     <X size={24} />
                 </button>

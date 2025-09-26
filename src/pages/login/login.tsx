@@ -1,8 +1,10 @@
+
 import { useState, FormEvent } from 'react'; 
 import './login.css';
 import { useNavigate } from 'react-router-dom';
 import { handleLogin } from '../handles';
 import { FaUser, FaEye, FaEyeSlash } from 'react-icons/fa';
+import logo from '../../assets/logo.1.png';
 
 interface IconProps {
   className?: string;
@@ -28,6 +30,8 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container">
+      <img src={logo} alt="Logo da sua empresa" className="login-logo" />
+      
       <h2>Login</h2>
       <form className="login-form" onSubmit={onSubmit}>
         

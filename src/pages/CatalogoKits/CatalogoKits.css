@@ -1,12 +1,12 @@
 :root {
-  --primary-color: #2a5b4a;
-  --primary-color-dark: #21473a;
-  --background-color: #f8fafc;
-  --card-background: #ffffff;
-  --text-color: #334155;
-  --text-light: #64748b;
-  --border-color: #e2e8f0;
-  --font-family: 'Inter', sans-serif;
+    --primary-color: #2a5b4a;
+    --primary-color-dark: #21473a;
+    --background-color: #f8fafc;
+    --card-background: #ffffff;
+    --text-color: #334155;
+    --text-light: #64748b;
+    --border-color: #e2e8f0;
+    --font-family: 'Inter', sans-serif;
 }
 
 .ck-catalogo-header {
@@ -32,21 +32,6 @@
     color: var(--text-light);
     width: 1.25rem;
     height: 1.25rem;
-}
-
-.ck-search-input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 3rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--border-color);
-    background-color: var(--card-background);
-    font-size: 1rem;
-}
-
-.ck-search-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.1);
 }
 
 .ck-filters-wrapper {
@@ -217,4 +202,51 @@
 }
 .ck-kit-button.secondary:hover {
     background-color: #e2e8f0;
+}
+
+.ck-search-input {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.ck-filter-select { 
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-background);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-color);
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ck-search-input {
+    padding-left: 3rem; 
+}
+.ck-search-input:focus,
+.ck-filter-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.1);
+}
+
+
+.ck-filter-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    padding-right: 3rem;
+    cursor: pointer;
+}
+
+.ck-filter-select:required:invalid {
+    color: var(--text-light);
 }

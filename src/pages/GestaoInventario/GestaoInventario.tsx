@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './GestaoInventario.css';
 import {
-    Search, ChevronDown, PlusCircle, Filter, Edit, Trash2, X
+    Search, PlusCircle, Filter, Edit, Trash2, X
 } from 'lucide-react';
 
 import { buscarReagentes, criarReagente, atualizarReagente, deletarReagente, Reagente } from '../../services/reagenteService';
@@ -12,6 +12,9 @@ const GestaoInventario: React.FC = () => {
     const [erro, setErro] = useState<string | null>(null);
     const [modalAberto, setModalAberto] = useState(false);
     const [reagenteAtual, setReagenteAtual] = useState<Reagente | null>(null);
+    const [termoBusca, setTermoBusca] = useState('');
+    const [filtroStatus, setFiltroStatus] = useState('');
+
     const userRole = localStorage.getItem('userRole');
     const isManager = userRole === 'ADMIN';
 
@@ -50,10 +53,15 @@ const GestaoInventario: React.FC = () => {
 
     const handleSalvar = async (dadosDoFormulario: Reagente) => {
         try {
+            const dadosParaSalvar = { ...dadosDoFormulario };
+            if (!dadosParaSalvar.id) {
+                delete dadosParaSalvar.id;
+            }
+
             if (reagenteAtual && reagenteAtual.id) {
-                await atualizarReagente(reagenteAtual.id, dadosDoFormulario);
+                await atualizarReagente(reagenteAtual.id, dadosParaSalvar);
             } else {
-                await criarReagente(dadosDoFormulario);
+                await criarReagente(dadosParaSalvar);
             }
             fecharModal();
             carregarReagentes();
@@ -62,7 +70,7 @@ const GestaoInventario: React.FC = () => {
             alert('Ocorreu um erro ao salvar o reagente.');
         }
     };
-    
+
     const handleDeletar = async (id: string) => {
         if (window.confirm('Tem certeza que deseja deletar este reagente?')) {
             try {
@@ -75,18 +83,44 @@ const GestaoInventario: React.FC = () => {
         }
     };
 
+    const reagentesFiltrados = reagentes.filter(reagente => {
+        const busca = termoBusca.toLowerCase();
+        const nomeMatch = reagente.nome.toLowerCase().includes(busca);
+        const casMatch = reagente.numeroCas.toLowerCase().includes(busca);
+        const statusMatch = filtroStatus ? reagente.status === filtroStatus : true;
+
+        return (nomeMatch || casMatch) && statusMatch;
+    });
+
     return (
         <>
             <div className="gi-page-header">
                 <div className="gi-search-wrapper">
                     <Search className="gi-search-icon" />
-                    <input type="text" placeholder="Buscar reagente por nome ou CAS..." className="gi-search-input" />
+                    <input 
+                        type="text" 
+                        placeholder="Buscar reagente por nome ou CAS..." 
+                        className="gi-search-input"
+                        value={termoBusca}
+                        onChange={(e) => setTermoBusca(e.target.value)}
+                    />
                 </div>
                 {isManager && (
                     <div className="gi-filters-wrapper">
-                        <button className="gi-filter-button">
-                            <Filter size={16} /> Status <ChevronDown size={16} />
-                        </button>
+                        <div className="gi-filter-select-wrapper">
+                            <Filter size={16} className="gi-filter-icon" />
+                            <select 
+                                className="gi-filter-select"
+                                value={filtroStatus}
+                                onChange={(e) => setFiltroStatus(e.target.value)}
+                            >
+                                <option value="">Todos os Status</option>
+                                <option value="OK">OK</option>
+                                <option value="BAIXO_ESTOQUE">Baixo Estoque</option>
+                                <option value="VENCENDO">Vencendo</option>
+                                <option value="VENCIDO">Vencido</option>
+                            </select>
+                        </div>
                         <button className="gi-action-button" onClick={abrirModalParaCriar}>
                             <PlusCircle size={18} /> Adicionar Reagente
                         </button>
@@ -110,7 +144,7 @@ const GestaoInventario: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {reagentes.map(item => (
+                            {reagentesFiltrados.map(item => (
                                 <tr key={item.id}>
                                     <td>
                                         <div className="gi-reagente-info">
@@ -119,7 +153,7 @@ const GestaoInventario: React.FC = () => {
                                         </div>
                                     </td>
                                     <td>{item.quantidade} {item.unidade}</td>
-                                    <td>{new Date(item.dataValidade).toLocaleDateString()}</td>
+                                    <td>{item.dataValidade ? new Date(item.dataValidade).toLocaleDateString('pt-BR', { timeZone: 'UTC' }) : '-'}</td>
                                     <td>
                                         <span className={`gi-status-badge status-${item.status.toLowerCase().replace('_', '-')}`}>
                                             {item.status.replace('_', ' ')}
@@ -160,17 +194,30 @@ interface ModalReagenteProps {
 
 const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, onSave, onClose }) => {
     const [formData, setFormData] = useState<Reagente>({
+        id: reagente?.id || undefined,
         nome: reagente?.nome || '',
         numeroCas: reagente?.numeroCas || '',
         quantidade: reagente?.quantidade || 0,
         unidade: reagente?.unidade || 'mL',
-        dataValidade: reagente?.dataValidade || '',
+        dataValidade: reagente?.dataValidade ? reagente.dataValidade.split('T')[0] : '',
         localizacao: reagente?.localizacao || '',
         status: reagente?.status || 'OK',
     });
 
+    const hoje = new Date().toISOString().split('T')[0];
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
+        let { name, value } = e.target;
+
+        if (name === 'dataValidade' && value) {
+            let [ano] = value.split('-');
+            
+            if (ano.length > 4) {
+                ano = ano.slice(0, 4);
+                value = ano + value.substring(ano.length);
+            }
+        }
+
         setFormData(prev => ({ ...prev, [name]: name === 'quantidade' ? parseFloat(value) : value }));
     };
 
@@ -191,14 +238,14 @@ const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, onSave, onClose
                         <label htmlFor="nome">Nome do Reagente</label>
                         <input type="text" id="nome" name="nome" value={formData.nome} onChange={handleChange} required />
                     </div>
-                     <div className="gi-form-group">
+                    <div className="gi-form-group">
                         <label htmlFor="numeroCas">Número CAS</label>
                         <input type="text" id="numeroCas" name="numeroCas" value={formData.numeroCas} onChange={handleChange} required />
                     </div>
                     <div className="gi-form-row">
                         <div className="gi-form-group">
                             <label htmlFor="quantidade">Quantidade</label>
-                            <input type="number" id="quantidade" name="quantidade" value={formData.quantidade} onChange={handleChange} required />
+                            <input type="number" step="0.01" id="quantidade" name="quantidade" value={formData.quantidade} onChange={handleChange} required />
                         </div>
                         <div className="gi-form-group">
                             <label htmlFor="unidade">Unidade</label>
@@ -212,7 +259,16 @@ const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, onSave, onClose
                     </div>
                     <div className="gi-form-group">
                         <label htmlFor="dataValidade">Data de Validade</label>
-                        <input type="date" id="dataValidade" name="dataValidade" value={formData.dataValidade} onChange={handleChange} required />
+                        <input 
+                            type="date" 
+                            id="dataValidade" 
+                            name="dataValidade" 
+                            value={formData.dataValidade} 
+                            onChange={handleChange} 
+                            min={hoje} 
+                            max="9999-12-31"
+                            required 
+                        />
                     </div>
                     <div className="gi-form-group">
                         <label htmlFor="localizacao">Localização</label>

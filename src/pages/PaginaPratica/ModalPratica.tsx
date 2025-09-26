@@ -99,7 +99,16 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
                     <div className="form-group"><label>Título da Prática</label><input type="text" placeholder="Ex: Titulação Ácido-Base" value={titulo} onChange={e => setTitulo(e.target.value)} required /></div>
                     <div className="form-group"><label>Disciplina</label><input type="text" placeholder="Ex: Química Geral" value={disciplina} onChange={e => setDisciplina(e.target.value)} /></div>
                     <div className="form-group"><label>Duração</label><input type="text" placeholder="Ex: 90 min" value={duracao} onChange={e => setDuracao(e.target.value)} /></div>
-                    <div className="form-group"><label>Dificuldade</label><input type="text" placeholder="Ex: Intermediário" value={dificuldade} onChange={e => setDificuldade(e.target.value)} /></div>
+                    
+                    <div className="form-group">
+                        <label>Dificuldade</label>
+                        <select value={dificuldade} onChange={e => setDificuldade(e.target.value)} required>
+                            <option value="" disabled>Selecione o nível</option>
+                            <option value="Fácil">Fácil</option>
+                            <option value="Intermediário">Intermediário</option>
+                            <option value="Difícil">Difícil</option>
+                        </select>
+                    </div>
                     
                     <div className="form-group form-group-with-tip">
                         <div className="label-with-help">
@@ -138,11 +147,11 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
                     <div className="form-group">
                         <label>Reagentes</label>
                         {reagentes.map((item, index) => (
-                             <div key={index} className="dynamic-list-item">
-                                <input type="text" placeholder="Nome do reagente" value={item.nome} onChange={e => handleListChange(reagentes, setReagentes, index, 'nome', e.target.value)} />
-                                <input type="text" placeholder="Qtd." value={item.qtd} onChange={e => handleListChange(reagentes, setReagentes, index, 'qtd', e.target.value)} style={{ flexGrow: 0, width: '80px' }} />
-                                <button type="button" className="remove-button" onClick={() => removeFromList(setReagentes, index)} title="Remover Reagente"><Trash2 size={16} /></button>
-                            </div>
+                                <div key={index} className="dynamic-list-item">
+                                    <input type="text" placeholder="Nome do reagente" value={item.nome} onChange={e => handleListChange(reagentes, setReagentes, index, 'nome', e.target.value)} />
+                                    <input type="text" placeholder="Qtd." value={item.qtd} onChange={e => handleListChange(reagentes, setReagentes, index, 'qtd', e.target.value)} style={{ flexGrow: 0, width: '80px' }} />
+                                    <button type="button" className="remove-button" onClick={() => removeFromList(setReagentes, index)} title="Remover Reagente"><Trash2 size={16} /></button>
+                                </div>
                         ))}
                         <button type="button" className="add-button" onClick={() => addToList(setReagentes, { nome: '', qtd: '' })}><PlusCircle size={16} /> Adicionar Reagente</button>
                     </div>

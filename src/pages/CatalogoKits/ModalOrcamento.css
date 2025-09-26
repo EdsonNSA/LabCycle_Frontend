@@ -1,24 +1,118 @@
-.mo-modal-overlay {
+
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(15, 23, 42, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    padding: 1rem;
 }
 
-.mo-modal-content {
-    background-color: var(--card-background, #fff);
+.modal-content {
+    background-color: #fff;
     padding: 2rem;
     border-radius: 0.75rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 500px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
     position: relative;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #334155;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 1rem;
+    font-family: inherit;
+    background-color: #f8fafc;
+    color: #334155;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #2a5b4a;
+    box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.15);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.button-primary, 
+.button-secondary {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+}
+
+.button-primary {
+    background-color: #2a5b4a;
+    color: white;
+}
+.button-primary:hover {
+    background-color: #21473a;
+}
+
+.button-secondary {
+    background-color: #fff;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+}
+.button-secondary:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
 }
 
 .mo-close-button {
@@ -28,71 +122,24 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--text-light, #64748b);
+    color: #64748b;
+    padding: 0.25rem;
+    line-height: 1;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
 }
 
-.mo-modal-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-color, #334155);
-    margin: 0 0 0.5rem 0;
+.mo-close-button:hover {
+    background-color: #f1f5f9;
+    color: #334155;
 }
 
 .mo-kit-name {
-    margin: 0 0 1.5rem 0;
-    color: var(--text-light, #64748b);
+    margin: -1rem 0 1.5rem 0;
+    color: #64748b;
+    font-size: 0.9rem;
 }
 
-.mo-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.mo-form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.mo-form-group label {
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--text-color, #334155);
-}
-
-.mo-form-group input,
-.mo-form-group textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--border-color, #e2e8f0);
-    font-size: 1rem;
-}
-
-.mo-form-group textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-.mo-form-group input:focus,
-.mo-form-group textarea:focus {
-    outline: none;
-    border-color: var(--primary-color, #2a5b4a);
-    box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.1);
-}
-
-.mo-submit-button {
-    padding: 0.8rem 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    background-color: var(--primary-color, #2a5b4a);
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    margin-top: 1rem;
-}
-
-.mo-submit-button:hover {
-    background-color: var(--primary-color-dark, #21473a);
+.mo-kit-name strong {
+    color: #334155;
 }
