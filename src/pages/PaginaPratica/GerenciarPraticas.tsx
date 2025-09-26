@@ -4,8 +4,7 @@ import { buscarAgendamentosPorTurma, criarAgendamento, Agendamento, DadosAgendam
 import { buscarTurmaPorId, Turma } from '../../services/turmaService';
 import { buscarPraticas, Pratica } from '../../services/PraticaService';
 import './GerenciarPraticas.css';
-import { CalendarPlus, ClipboardList, ArrowLeft } from 'lucide-react';
-
+import { CalendarPlus, ClipboardList, ArrowLeft, X } from 'lucide-react';
 
 interface ModalAgendamentoProps {
     isOpen: boolean;
@@ -19,6 +18,13 @@ const ModalAgendamento: React.FC<ModalAgendamentoProps> = ({ isOpen, turma, prat
     const [praticaId, setPraticaId] = useState('');
     const [dataHora, setDataHora] = useState('');
 
+    useEffect(() => {
+        if (isOpen) {
+            setPraticaId('');
+            setDataHora('');
+        }
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -30,29 +36,58 @@ const ModalAgendamento: React.FC<ModalAgendamentoProps> = ({ isOpen, turma, prat
         aoSalvar({ praticaId, dataHora });
     };
 
+    const agora = new Date();
+    agora.setMinutes(agora.getMinutes() - agora.getTimezoneOffset());
+    const agoraString = agora.toISOString().slice(0, 16);
+
     return (
-        <div className="pr-modal-overlay"> 
-            <div className="pr-modal-content">
+        <div className="modal-overlay" onClick={aoFechar}> 
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
                 <form onSubmit={handleSubmit}>
-                    <h2>Agendar Nova Prática</h2>
-                    <p className="gp-modal-subtitle">Para a turma: <strong>{turma.nomeDisciplina} ({turma.codigo})</strong></p>
-                    
-                    <div className="pr-form-group">
-                        <label htmlFor="praticaId">Prática</label>
-                        <select id="praticaId" value={praticaId} onChange={(e) => setPraticaId(e.target.value)} required>
-                            <option value="" disabled>Selecione uma prática</option>
-                            {praticas.map(pratica => (
-                                <option key={pratica.id} value={pratica.id}>{pratica.titulo}</option>
-                            ))}
-                        </select>
+                    <div className="modal-header">
+                        <h3>Agendar Nova Prática</h3>
+                        <button type="button" className="modal-close-button" onClick={aoFechar}>
+                            <X size={20} />
+                        </button>
                     </div>
-                    <div className="pr-form-group">
-                        <label htmlFor="dataHora">Data e Hora</label>
-                        <input type="datetime-local" id="dataHora" value={dataHora} onChange={(e) => setDataHora(e.target.value)} required />
+                    <div className="modal-body">
+                        <p className="gp-modal-subtitle">Para a turma: <strong>{turma.nomeDisciplina} ({turma.codigo})</strong></p>
+                        
+                        <div className="form-group">
+                            <label htmlFor="praticaId">Prática</label>
+                            <select id="praticaId" value={praticaId} onChange={(e) => setPraticaId(e.target.value)} required>
+                                <option value="" disabled>Selecione uma prática</option>
+                                {praticas.map(pratica => (
+                                    <option key={pratica.id} value={pratica.id}>{pratica.titulo}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="dataHora">Data e Hora</label>
+                            <input 
+                                type="datetime-local" 
+                                id="dataHora" 
+                                value={dataHora} 
+                                onChange={(e) => {
+                                    let value = e.target.value;
+                                    if (value) {
+                                        let [ano] = value.split('-');
+                                        if (ano.length > 4) {
+                                            ano = ano.slice(0, 4);
+                                            value = ano + value.substring(ano.length);
+                                        }
+                                    }
+                                    setDataHora(value);
+                                }} 
+                                min={agoraString}
+                                max="9999-12-31T23:59"
+                                required 
+                            />
+                        </div>
                     </div>
-                    <div className="pr-modal-actions">
-                        <button type="button" className="pr-button-secondary" onClick={aoFechar}>Cancelar</button>
-                        <button type="submit" className="pr-button-primary">Agendar</button>
+                    <div className="modal-actions">
+                        <button type="button" className="button-secondary" onClick={aoFechar}>Cancelar</button>
+                        <button type="submit" className="button-primary">Agendar</button>
                     </div>
                 </form>
             </div>

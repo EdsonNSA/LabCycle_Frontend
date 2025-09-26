@@ -31,7 +31,7 @@ body {
   border-radius: 20px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   border: 2px solid var(--primary-color);
-  margin-top: -60px;
+  margin-top: -20px;
   width: 100%;
   width: 420px;
 }
@@ -135,4 +135,15 @@ body {
 
 .link-button:hover {
     text-decoration: underline;
+}
+
+.login-logo {
+  max-width: 180px;
+  margin-bottom: 2rem;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

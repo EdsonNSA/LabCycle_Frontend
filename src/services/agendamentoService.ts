@@ -1,3 +1,7 @@
+
+import api from '../services/api'; 
+
+
 export interface PraticaResumo {
     id: string;
     titulo: string;
@@ -17,61 +21,35 @@ export interface DadosAgendamento {
     dataHora: string;
 }
 
-const BASE_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
-const AGENDAMENTOS_API_URL = `${BASE_API_URL}/agendamentos`;
 
 const getToken = () => localStorage.getItem('authToken');
 
+const getAuthHeaders = () => ({
+    headers: {
+        'Authorization': `Bearer ${getToken()}`
+    }
+});
 
 export const buscarAgendamentos = async (): Promise<Agendamento[]> => {
-    const response = await fetch(AGENDAMENTOS_API_URL, {
-        headers: { 'Authorization': `Bearer ${getToken()}` }
-    });
-    if (!response.ok) throw new Error('Falha ao buscar agendamentos.');
-    return response.json();
+    const response = await api.get('/agendamentos', getAuthHeaders());
+    return response.data;
 };
 
 export const buscarAgendamentosPorTurma = async (turmaId: string): Promise<Agendamento[]> => {
-    const response = await fetch(`${AGENDAMENTOS_API_URL}/por-turma/${turmaId}`, {
-        headers: { 'Authorization': `Bearer ${getToken()}` }
-    });
-    if (!response.ok) throw new Error('Falha ao buscar os agendamentos da turma.');
-    return response.json();
+    const response = await api.get(`/agendamentos/por-turma/${turmaId}`, getAuthHeaders());
+    return response.data;
 };
 
 export const criarAgendamento = async (dados: DadosAgendamento): Promise<Agendamento> => {
-    const response = await fetch(AGENDAMENTOS_API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getToken()}`
-        },
-        body: JSON.stringify(dados)
-    });
-    if (!response.ok) {
-        const erro = await response.text();
-        throw new Error(`Falha ao criar agendamento: ${erro}`);
-    }
-    return response.json();
+    const response = await api.post('/agendamentos', dados, getAuthHeaders());
+    return response.data;
 };
 
 export const atualizarAgendamento = async (id: string, dados: DadosAgendamento): Promise<Agendamento> => {
-    const response = await fetch(`${AGENDAMENTOS_API_URL}/${id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getToken()}`
-        },
-        body: JSON.stringify(dados)
-    });
-    if (!response.ok) throw new Error('Falha ao atualizar agendamento.');
-    return response.json();
+    const response = await api.put(`/agendamentos/${id}`, dados, getAuthHeaders());
+    return response.data;
 };
 
 export const deletarAgendamento = async (id: string): Promise<void> => {
-    const response = await fetch(`${AGENDAMENTOS_API_URL}/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${getToken()}` }
-    });
-    if (!response.ok) throw new Error('Falha ao deletar agendamento.');
+    await api.delete(`/agendamentos/${id}`, getAuthHeaders());
 };

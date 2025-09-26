@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import './ListaTurmas.css';
 import { PlusCircle, Users, FlaskConical, Edit, Trash2 } from 'lucide-react';
 import { buscarTurmas, deletarTurma, criarTurma, atualizarTurma, Turma, DadosCriacaoTurma } from '../../services/turmaService';
+import { buscarAgendamentos, Agendamento } from '../../services/agendamentoService';
 import ModalTurma from './ModalTurma';
 
 const ListaTurmas: React.FC = () => {
     const navigate = useNavigate();
 
     const [turmas, setTurmas] = useState<Turma[]>([]);
+    const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState<string | null>(null);
     const [modalAberto, setModalAberto] = useState(false);
@@ -18,19 +20,23 @@ const ListaTurmas: React.FC = () => {
     const isManager = userRole === 'ADMIN';
 
     useEffect(() => {
-        const carregarTurmas = async () => {
+        const carregarDados = async () => {
             try {
                 setCarregando(true);
-                const dados = await buscarTurmas();
-                setTurmas(dados);
+                const [dadosTurmas, dadosAgendamentos] = await Promise.all([
+                    buscarTurmas(),
+                    buscarAgendamentos()
+                ]);
+                setTurmas(dadosTurmas);
+                setAgendamentos(dadosAgendamentos);
                 setErro(null);
             } catch (err) {
-                setErro('Não foi possível carregar as turmas.');
+                setErro('Não foi possível carregar os dados.');
             } finally {
                 setCarregando(false);
             }
         };
-        carregarTurmas();
+        carregarDados();
     }, []);
 
     const handleDeletarTurma = async (id: string) => {
@@ -87,38 +93,42 @@ const ListaTurmas: React.FC = () => {
             </div>
 
             <div className="lt-turmas-grid">
-                {turmas.map(turma => (
-                    <div key={turma.id} className="lt-turma-card">
-                        <div className="lt-turma-card-header">
-                            <span className="lt-turma-semestre">{turma.semestre}</span>
-                            {isManager && (
-                                <div className="lt-turma-actions">
-                                    <button onClick={() => abrirModalParaEditar(turma)}><Edit size={16} /></button>
-                                    <button onClick={() => handleDeletarTurma(turma.id)}><Trash2 size={16} /></button>
-                                </div>
-                            )}
-                        </div>
-                        <div className="lt-turma-card-body">
-                            <h3 className="lt-turma-disciplina">{turma.nomeDisciplina}</h3>
-                            <p className="lt-turma-codigo">{turma.codigo}</p>
-                            <div className="lt-turma-stats">
-                                <div className="lt-stat-item">
-                                    <Users size={16} />
-                                    <span>{turma.numeroAlunos} Alunos</span>
-                                </div>
-                                <div className="lt-stat-item">
-                                    <FlaskConical size={16} />
-                                    <span>0 Práticas</span>
+                {turmas.map(turma => {
+                    const praticasCount = agendamentos.filter(ag => ag.turmaCodigo === turma.codigo).length;
+
+                    return (
+                        <div key={turma.id} className="lt-turma-card">
+                            <div className="lt-turma-card-header">
+                                <span className="lt-turma-semestre">{turma.semestre}</span>
+                                {isManager && (
+                                    <div className="lt-turma-actions">
+                                        <button onClick={() => abrirModalParaEditar(turma)}><Edit size={16} /></button>
+                                        <button onClick={() => handleDeletarTurma(turma.id)}><Trash2 size={16} /></button>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="lt-turma-card-body">
+                                <h3 className="lt-turma-disciplina">{turma.nomeDisciplina}</h3>
+                                <p className="lt-turma-codigo">{turma.codigo}</p>
+                                <div className="lt-turma-stats">
+                                    <div className="lt-stat-item">
+                                        <Users size={16} />
+                                        <span>{turma.numeroAlunos} Alunos</span>
+                                    </div>
+                                    <div className="lt-stat-item">
+                                        <FlaskConical size={16} />
+                                        <span>{praticasCount} {praticasCount === 1 ? 'Prática' : 'Práticas'}</span>
+                                    </div>
                                 </div>
                             </div>
+                            <div className="lt-turma-card-footer">
+                                <button className="lt-turma-button" onClick={() => navigate(`/minhas-turmas/${turma.id}/praticas`)}>
+                                    Práticas
+                                </button>
+                            </div>
                         </div>
-                        <div className="lt-turma-card-footer">
-                            <button className="lt-turma-button" onClick={() => navigate(`/minhas-turmas/${turma.id}/praticas`)}>
-                                Práticas
-                            </button>
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             {modalAberto && (

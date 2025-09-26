@@ -1,14 +1,17 @@
+
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(15, 23, 42, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
 }
 
 .modal-content {
@@ -25,99 +28,116 @@
 .modal-content h2 {
     margin-top: 0;
     font-size: 1.5rem;
-    color: #334155;
+    font-weight: 700;
+    color: #1e293b;
 }
 
-.modal-content .form-group {
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
+
+.form-group {
+    margin-bottom: 1.25rem;
 }
 
-.modal-content .form-group label {
+.form-group label {
+    display: block;
     margin-bottom: 0.5rem;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.875rem;
     color: #334155;
 }
 
-.modal-content .form-group input,
-.modal-content .form-group textarea {
+.form-group input,
+.form-group textarea,
+.form-group select {
     width: 100%;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
+    padding: 12px 14px;
+    border-radius: 8px;
     border: 1px solid #e2e8f0;
     font-size: 1rem;
     font-family: inherit;
+    background-color: #f8fafc;
+    color: #334155;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.modal-content .form-group textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-.modal-content .form-group input:focus,
-.modal-content .form-group textarea:focus {
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
     outline: none;
     border-color: #2a5b4a;
-    box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.1);
+    box-shadow: 0 0 0 3px rgba(42, 91, 74, 0.15);
 }
 
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    margin-top: 2rem;
-    border-top: 1px solid #e2e8f0;
-    padding-top: 1.5rem;
-}
-
-.button-primary, .button-secondary {
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    border: none;
+.form-group select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 1em;
+    padding-right: 40px;
     cursor: pointer;
 }
 
-.button-primary {
-    background-color: #2a5b4a;
-    color: white;
+.form-group select:required:invalid {
+    color: #64748b;
 }
 
-.button-secondary {
-    background-color: #f1f5f9;
-    color: #334155;
-    border: 1px solid #e2e8f0;
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
 }
 
-.form-group-with-tip {
-    position: relative;
-}
-
-.video-tip {
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    width: 100%;
-    background-color: #334155;
-    color: white;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
+.dynamic-list-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
     margin-bottom: 0.5rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    z-index: 10;
 }
 
-.video-tip p {
-    margin: 0 0 0.5rem 0;
+.dynamic-list-item input {
+    flex-grow: 1;
 }
-.video-tip code {
-    background-color: #475569;
-    padding: 0.15rem 0.4rem;
-    border-radius: 0.25rem;
-    font-family: monospace;
+
+.add-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: none;
+    border: 1px dashed #cbd5e1;
+    color: #64748b;
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.add-button:hover {
+    background-color: #f8fafc;
+    border-color: #2a5b4a;
+    color: #2a5b4a;
+}
+
+.remove-button {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.remove-button:hover {
+    background-color: #fee2e2;
 }
 
 .label-with-help {
@@ -133,59 +153,45 @@
     margin: 0;
     cursor: pointer;
     color: #94a3b8;
-    display: flex;
-    align-items: center;
 }
+
 .help-button:hover {
     color: #64748b;
 }
 
-
-.dynamic-list-item {
+.modal-actions {
     display: flex;
+    justify-content: flex-end;
     gap: 0.75rem;
-    align-items: center;
-    margin-bottom: 0.5rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
 }
 
-.dynamic-list-item input {
-    flex-grow: 1;
-}
-
-.dynamic-list-item .remove-button {
-    flex-shrink: 0;
-    background: none;
-    border: none;
-    color: #ef4444;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-}
-
-.dynamic-list-item .remove-button:hover {
-    background-color: #fee2e2;
-}
-
-.add-button {
-    background: none;
-    border: 1px dashed #cbd5e1;
-    color: #64748b;
-    width: 100%;
-    padding: 0.75rem;
+.button-primary, 
+.button-secondary {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
+    border: 1px solid transparent;
     cursor: pointer;
-    font-weight: 500;
-    margin-top: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+    transition: all 0.2s ease;
 }
 
-.add-button:hover {
+.button-primary {
+    background-color: #2a5b4a;
+    color: white;
+}
+.button-primary:hover {
+    background-color: #21473a;
+}
+
+.button-secondary {
+    background-color: #fff;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+}
+.button-secondary:hover {
     background-color: #f8fafc;
-    border-color: #2a5b4a;
-    color: #2a5b4a;
+    border-color: #cbd5e1;
 }

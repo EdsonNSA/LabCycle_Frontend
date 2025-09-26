@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import './ModalOrcamento.css';
+import './ModalOrcamento.css'; 
 
 interface Kit {
     id: number;
@@ -14,13 +14,35 @@ interface ModalOrcamentoProps {
 }
 
 const ModalOrcamento: React.FC<ModalOrcamentoProps> = ({ isOpen, onClose, kit }) => {
-    const [nome, setNome] = useState('');
-    const [contato, setContato] = useState('');
-    const [email, setEmail] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [quantidade, setQuantidade] = useState(1);
+    const [formData, setFormData] = useState({
+        nome: '',
+        contato: '',
+        email: '',
+        descricao: '',
+        quantidade: 1,
+    });
 
+    useEffect(() => {
+        if (!isOpen) {
+            setFormData({
+                nome: '',
+                contato: '',
+                email: '',
+                descricao: '',
+                quantidade: 1,
+            });
+        }
+    }, [isOpen]);
+    
     if (!isOpen || !kit) return null;
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { id, value, type } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [id]: type === 'number' ? parseInt(value) : value,
+        }));
+    };
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
@@ -28,54 +50,55 @@ const ModalOrcamento: React.FC<ModalOrcamentoProps> = ({ isOpen, onClose, kit })
         const dadosOrcamento = {
             kitId: kit.id,
             kitNome: kit.moduloTematico,
-            nome,
-            contato,
-            email,
-            descricao,
-            quantidade,
+            ...formData,
         };
 
         console.log("Solicitação de Orçamento Enviada:", dadosOrcamento);
-        alert(`Obrigado, ${nome}! Sua solicitação para ${quantidade} kit(s) de "${kit.moduloTematico}" foi enviada.`);
+        alert(`Obrigado, ${formData.nome}! Sua solicitação para ${formData.quantidade} kit(s) de "${kit.moduloTematico}" foi enviada.`);
         
         onClose();
     };
 
     return (
-        <div className="mo-modal-overlay">
-            <div className="mo-modal-content">
-                <button onClick={onClose} className="mo-close-button">
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
+                <button onClick={onClose} className="mo-close-button" aria-label="Fechar modal">
                     <X size={24} />
                 </button>
                 
-                <h2 className="mo-modal-title">Solicitar Orçamento</h2>
+                <h3>Solicitar Orçamento</h3>
                 <p className="mo-kit-name">Kit: <strong>{kit.moduloTematico}</strong></p>
 
-                <form onSubmit={handleSubmit} className="mo-form">
-                    <div className="mo-form-group">
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
                         <label htmlFor="nome">Nome</label>
-                        <input id="nome" type="text" value={nome} onChange={e => setNome(e.target.value)} required />
+                        <input id="nome" type="text" value={formData.nome} onChange={handleChange} required />
                     </div>
-                    <div className="mo-form-group">
-                        <label htmlFor="contato">Contato</label>
-                        <input id="contato" type="text" value={contato} onChange={e => setContato(e.target.value)} required />
+                    <div className="form-group">
+                        <label htmlFor="contato">Contato (Telefone/WhatsApp)</label>
+                        <input id="contato" type="text" value={formData.contato} onChange={handleChange} required />
                     </div>
-                    <div className="mo-form-group">
+                    <div className="form-group">
                         <label htmlFor="email">E-mail</label>
-                        <input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+                        <input id="email" type="email" value={formData.email} onChange={handleChange} required />
                     </div>
-                    <div className="mo-form-group">
+                    <div className="form-group">
                         <label htmlFor="quantidade">Quantos kits você precisa?</label>
-                        <input id="quantidade" type="number" min="1" value={quantidade} onChange={e => setQuantidade(parseInt(e.target.value))} required />
+                        <input id="quantidade" type="number" min="1" value={formData.quantidade} onChange={handleChange} required />
                     </div>
-                    <div className="mo-form-group">
-                        <label htmlFor="descricao">Especificações</label>
-                        <textarea id="descricao" value={descricao} onChange={e => setDescricao(e.target.value)} rows={4}></textarea>
+                    <div className="form-group">
+                        <label htmlFor="descricao">Especificações (Opcional)</label>
+                        <textarea id="descricao" value={formData.descricao} onChange={handleChange} rows={4} placeholder="Alguma observação ou pergunta?"></textarea>
                     </div>
 
-                    <button type="submit" className="mo-submit-button">
-                        Enviar Solicitação
-                    </button>
+                    <div className="modal-actions">
+                         <button type="button" className="button-secondary" onClick={onClose}>
+                            Cancelar
+                        </button>
+                        <button type="submit" className="button-primary">
+                            Enviar Solicitação
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
