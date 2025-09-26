@@ -1,3 +1,5 @@
+
+import api from '../services/api'; 
 import React from 'react';
 import { NavigateFunction } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -42,17 +44,8 @@ export const handleLogin = async ({ event, email, password, navigate }: LoginPro
     event.preventDefault();
 
     try {
-        const response = await fetch('http://localhost:8080/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-        });
-
-        if (!response.ok) {
-            throw new Error('Email ou senha inválidos.');
-        }
-
-        const data = await response.json();
+        const response = await api.post('/auth/login', { email, password });
+        const data = response.data;
         const roleFromToken = getRoleFromToken(data.token);
         const userRole = roleFromToken === 'USER' ? 'ALUNO' : roleFromToken;
 
@@ -84,7 +77,7 @@ export const handleRegister = async ({
     password,
     confirmPassword,
     role,
-    setPasswordErrors: _setPasswordErrors, // <-- Ajuste aqui
+    setPasswordErrors: _setPasswordErrors,
     navigate
 }: RegisterProps): Promise<void> => {
     event.preventDefault();
@@ -103,21 +96,19 @@ export const handleRegister = async ({
     }
     
     try {
-        const response = await fetch('http://localhost:8080/auth/registrar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, login: email, senha: password, role: role === 'ALUNO' ? 'USER' : role }),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'O email informado já pode estar em uso.');
-        }
+        const requestBody = {
+            name,
+            login: email,
+            senha: password,
+            role: role === 'ALUNO' ? 'USER' : role
+        };
+        await api.post('/auth/registrar', requestBody);
 
         alert('Cadastro realizado com sucesso! Você será redirecionado para a tela de login.');
         navigate('/login');
-    } catch (error) {
+    } catch (error: any) {
         console.error('Erro no cadastro:', error);
-        alert(`Falha no cadastro. ${error instanceof Error ? error.message : 'Tente novamente.'}`);
+        const errorMessage = error.response?.data?.message || 'O email informado já pode estar em uso.';
+        alert(`Falha no cadastro. ${errorMessage}`);
     }
 };
