@@ -9,13 +9,14 @@ export interface Reagente {
     status: 'OK' | 'BAIXO_ESTOQUE' | 'VENCENDO' | 'VENCIDO';
 }
 
-
-const API_URL = 'http://localhost:8080/reagentes';
+const BASE_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+const REAGENTES_API_URL = `${BASE_API_URL}/reagentes`;
 
 const getToken = () => localStorage.getItem('authToken');
 
+
 export const buscarReagentes = async (): Promise<Reagente[]> => {
-    const response = await fetch(API_URL, {
+    const response = await fetch(REAGENTES_API_URL, {
         headers: { 'Authorization': `Bearer ${getToken()}` }
     });
     if (!response.ok) throw new Error('Falha ao buscar reagentes.');
@@ -23,7 +24,7 @@ export const buscarReagentes = async (): Promise<Reagente[]> => {
 };
 
 export const criarReagente = async (dadosReagente: Reagente): Promise<Reagente> => {
-    const response = await fetch(API_URL, {
+    const response = await fetch(REAGENTES_API_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -36,7 +37,7 @@ export const criarReagente = async (dadosReagente: Reagente): Promise<Reagente> 
 };
 
 export const atualizarReagente = async (id: string, dadosReagente: Reagente): Promise<Reagente> => {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${REAGENTES_API_URL}/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -49,7 +50,7 @@ export const atualizarReagente = async (id: string, dadosReagente: Reagente): Pr
 };
 
 export const deletarReagente = async (id: string): Promise<void> => {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${REAGENTES_API_URL}/${id}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${getToken()}`

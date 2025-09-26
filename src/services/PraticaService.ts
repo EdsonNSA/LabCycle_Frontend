@@ -15,11 +15,14 @@ export interface Pratica {
 
 export type DadosCadastroPratica = Omit<Pratica, 'id'>;
 
-const API_URL = 'http://localhost:8080/praticas';
+const BASE_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+const PRATICAS_API_URL = `${BASE_API_URL}/praticas`;
+
 const getToken = () => localStorage.getItem('authToken');
 
+
 export const buscarPraticas = async (): Promise<Pratica[]> => {
-    const response = await fetch(API_URL, {
+    const response = await fetch(PRATICAS_API_URL, {
         headers: { 'Authorization': `Bearer ${getToken()}` }
     });
     if (!response.ok) throw new Error('Falha ao buscar a lista de práticas.');
@@ -27,7 +30,7 @@ export const buscarPraticas = async (): Promise<Pratica[]> => {
 };
 
 export const buscarPraticaPorId = async (id: string): Promise<Pratica> => {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${PRATICAS_API_URL}/${id}`, {
         headers: { 'Authorization': `Bearer ${getToken()}` }
     });
     if (!response.ok) throw new Error('Falha ao buscar detalhes da prática.');
@@ -35,7 +38,7 @@ export const buscarPraticaPorId = async (id: string): Promise<Pratica> => {
 };
 
 export const criarPratica = async (dados: DadosCadastroPratica): Promise<Pratica> => {
-    const response = await fetch(API_URL, {
+    const response = await fetch(PRATICAS_API_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -48,7 +51,7 @@ export const criarPratica = async (dados: DadosCadastroPratica): Promise<Pratica
 };
 
 export const atualizarPratica = async (id: string, dados: Partial<DadosCadastroPratica>): Promise<Pratica> => {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${PRATICAS_API_URL}/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -61,7 +64,7 @@ export const atualizarPratica = async (id: string, dados: Partial<DadosCadastroP
 };
 
 export const deletarPratica = async (id: string): Promise<void> => {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${PRATICAS_API_URL}/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${getToken()}` }
     });

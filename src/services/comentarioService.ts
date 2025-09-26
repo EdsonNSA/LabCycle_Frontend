@@ -9,11 +9,14 @@ export interface DadosNovoComentario {
     conteudo: string;
 }
 
-const API_URL = 'http://localhost:8080/praticas';
+const BASE_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+const PRATICAS_API_URL = `${BASE_API_URL}/praticas`;
+
 const getToken = () => localStorage.getItem('authToken');
 
+
 export const buscarComentarios = async (praticaId: string): Promise<Comentario[]> => {
-    const response = await fetch(`${API_URL}/${praticaId}/comentarios`, {
+    const response = await fetch(`${PRATICAS_API_URL}/${praticaId}/comentarios`, {
         headers: { 'Authorization': `Bearer ${getToken()}` }
     });
     if (!response.ok) throw new Error('Falha ao buscar comentários.');
@@ -21,7 +24,7 @@ export const buscarComentarios = async (praticaId: string): Promise<Comentario[]
 };
 
 export const criarComentario = async (praticaId: string, dados: DadosNovoComentario): Promise<Comentario> => {
-    const response = await fetch(`${API_URL}/${praticaId}/comentarios`, {
+    const response = await fetch(`${PRATICAS_API_URL}/${praticaId}/comentarios`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

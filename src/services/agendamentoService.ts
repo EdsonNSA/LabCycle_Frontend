@@ -17,11 +17,14 @@ export interface DadosAgendamento {
     dataHora: string;
 }
 
-const API_URL = 'http://localhost:8080/agendamentos';
+const BASE_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+const AGENDAMENTOS_API_URL = `${BASE_API_URL}/agendamentos`;
+
 const getToken = () => localStorage.getItem('authToken');
 
+
 export const buscarAgendamentos = async (): Promise<Agendamento[]> => {
-    const response = await fetch(API_URL, {
+    const response = await fetch(AGENDAMENTOS_API_URL, {
         headers: { 'Authorization': `Bearer ${getToken()}` }
     });
     if (!response.ok) throw new Error('Falha ao buscar agendamentos.');
@@ -29,7 +32,7 @@ export const buscarAgendamentos = async (): Promise<Agendamento[]> => {
 };
 
 export const buscarAgendamentosPorTurma = async (turmaId: string): Promise<Agendamento[]> => {
-    const response = await fetch(`${API_URL}/por-turma/${turmaId}`, {
+    const response = await fetch(`${AGENDAMENTOS_API_URL}/por-turma/${turmaId}`, {
         headers: { 'Authorization': `Bearer ${getToken()}` }
     });
     if (!response.ok) throw new Error('Falha ao buscar os agendamentos da turma.');
@@ -37,7 +40,7 @@ export const buscarAgendamentosPorTurma = async (turmaId: string): Promise<Agend
 };
 
 export const criarAgendamento = async (dados: DadosAgendamento): Promise<Agendamento> => {
-    const response = await fetch(API_URL, {
+    const response = await fetch(AGENDAMENTOS_API_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -53,7 +56,7 @@ export const criarAgendamento = async (dados: DadosAgendamento): Promise<Agendam
 };
 
 export const atualizarAgendamento = async (id: string, dados: DadosAgendamento): Promise<Agendamento> => {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${AGENDAMENTOS_API_URL}/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -66,7 +69,7 @@ export const atualizarAgendamento = async (id: string, dados: DadosAgendamento):
 };
 
 export const deletarAgendamento = async (id: string): Promise<void> => {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${AGENDAMENTOS_API_URL}/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${getToken()}` }
     });

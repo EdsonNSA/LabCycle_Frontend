@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigateFunction } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
+
 interface LoginProps {
     event: React.FormEvent<HTMLFormElement>;
     email: string;
@@ -28,6 +29,9 @@ interface DecodedToken {
     exp: number;
 }
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+
+
 const getRoleFromToken = (token: string): string => {
     try {
         const decoded: DecodedToken = jwtDecode(token);
@@ -38,11 +42,12 @@ const getRoleFromToken = (token: string): string => {
     }
 };
 
+
 export const handleLogin = async ({ event, email, password, navigate }: LoginProps): Promise<void> => {
     event.preventDefault();
 
     try {
-        const response = await fetch('http://localhost:8080/auth/login', {
+        const response = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
@@ -84,7 +89,7 @@ export const handleRegister = async ({
     password,
     confirmPassword,
     role,
-    setPasswordErrors: _setPasswordErrors, // <-- Ajuste aqui
+    setPasswordErrors: _setPasswordErrors,
     navigate
 }: RegisterProps): Promise<void> => {
     event.preventDefault();
@@ -103,7 +108,7 @@ export const handleRegister = async ({
     }
     
     try {
-        const response = await fetch('http://localhost:8080/auth/registrar', {
+        const response = await fetch(`${API_URL}/auth/registrar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, login: email, senha: password, role: role === 'ALUNO' ? 'USER' : role }),

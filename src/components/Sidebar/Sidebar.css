@@ -1,4 +1,3 @@
-  /* --- Estilos da Barra Lateral --- */
   .sidebar {
     width: 256px;
     background-color: #ffffff;
@@ -6,11 +5,11 @@
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    height: 100vh; /* Garante que ocupe a altura toda */
-    position: fixed; /* Mantém a sidebar fixa na tela */
+    height: 100vh;
+    position: fixed;
     left: 0;
     top: 0;
-    z-index: 10; /* Garante que a sidebar fique por cima de outros conteúdos */
+    z-index: 10;
   }
 
   .sidebar-header {
@@ -57,9 +56,7 @@
     background-color: #f1f5f9;
   }
 
-  /* Estilo para o link da página atual. 
-    O NavLink adiciona a classe "active" automaticamente. 
-  */
+
   .nav-link.active {
     background-color: #eef2ff;
     color: #2a5b4a;
