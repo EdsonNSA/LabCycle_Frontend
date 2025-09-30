@@ -4,6 +4,7 @@ import React from 'react';
 import { NavigateFunction } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
+
 interface LoginProps {
     event: React.FormEvent<HTMLFormElement>;
     email: string;
@@ -30,6 +31,9 @@ interface DecodedToken {
     exp: number;
 }
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+
+
 const getRoleFromToken = (token: string): string => {
     try {
         const decoded: DecodedToken = jwtDecode(token);
@@ -40,12 +44,15 @@ const getRoleFromToken = (token: string): string => {
     }
 };
 
+
 export const handleLogin = async ({ event, email, password, navigate }: LoginProps): Promise<void> => {
     event.preventDefault();
 
     try {
         const response = await api.post('/auth/login', { email, password });
         const data = response.data;
+
+
         const roleFromToken = getRoleFromToken(data.token);
         const userRole = roleFromToken === 'USER' ? 'ALUNO' : roleFromToken;
 
@@ -103,6 +110,7 @@ export const handleRegister = async ({
             role: role === 'ALUNO' ? 'USER' : role
         };
         await api.post('/auth/registrar', requestBody);
+
 
         alert('Cadastro realizado com sucesso! Você será redirecionado para a tela de login.');
         navigate('/login');
