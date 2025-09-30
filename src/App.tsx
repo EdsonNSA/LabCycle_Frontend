@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/login/login';
-import Register from './pages/register/register';
+// import Register from './pages/register/register';
 import Layout from './components/Layout/Layout';
 import PainelAluno from './pages/PainelAluno/PainelAluno'; 
 import PainelResponsavel from './pages/PainelResponsavel/PainelResponsavel';
@@ -19,7 +19,7 @@ const App: React.FC = () => {
             <Routes>
                 <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+                {/* <Route path="/register" element={<Register />} /> */}
                 <Route path="/painel-aluno" element={<Layout><PainelAluno /></Layout>} />
                 <Route path="/painel-responsavel" element={<Layout><PainelResponsavel /></Layout>} />
                 <Route path="/catalogo-kits" element={<Layout><CatalogoKits /></Layout>} />

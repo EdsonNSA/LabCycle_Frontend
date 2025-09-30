@@ -1,4 +1,3 @@
-
 import { useState, FormEvent } from 'react'; 
 import './login.css';
 import { useNavigate } from 'react-router-dom';
@@ -33,6 +32,12 @@ const Login: React.FC = () => {
       <img src={logo} alt="Logo da sua empresa" className="login-logo" />
       
       <h2>Login</h2>
+
+      <div className="test-credentials-info">
+        <p><strong>Ambiente de Teste:</strong></p>
+        <p>Use <strong>admin@email.com</strong> | senha: <strong>admin123</strong></p>
+      </div>
+
       <form className="login-form" onSubmit={onSubmit}>
         
         <label htmlFor="email">Email</label>
@@ -78,7 +83,7 @@ const Login: React.FC = () => {
           <button
             type="button"
             className="link-button"
-            onClick={() => navigate('/register')}
+            onClick={() => alert('A funcionalidade de cadastro não está disponível no momento.')}
           >
             Cadastre-se
           </button>
