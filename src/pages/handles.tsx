@@ -1,4 +1,3 @@
-
 import api from '../services/api'; 
 import React from 'react';
 import { NavigateFunction } from 'react-router-dom';
@@ -31,6 +30,7 @@ interface DecodedToken {
     exp: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
 
