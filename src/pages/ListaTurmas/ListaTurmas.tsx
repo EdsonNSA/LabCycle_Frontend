@@ -6,6 +6,8 @@ import { buscarTurmas, deletarTurma, criarTurma, atualizarTurma, Turma, DadosCri
 import { buscarAgendamentos, Agendamento } from '../../services/agendamentoService';
 import ModalTurma from './ModalTurma';
 
+const toArray = (data: any): data is any[] => Array.isArray(data);
+
 const ListaTurmas: React.FC = () => {
     const navigate = useNavigate();
 
@@ -16,6 +18,9 @@ const ListaTurmas: React.FC = () => {
     const [modalAberto, setModalAberto] = useState(false);
     const [turmaEmEdicao, setTurmaEmEdicao] = useState<Turma | null>(null);
 
+    const userEmail = localStorage.getItem('userEmail');
+    const isDemoMode = userEmail === 'admin@email.com';
+
     const userRole = localStorage.getItem('userRole');
     const isManager = userRole === 'ADMIN';
 
@@ -23,10 +28,21 @@ const ListaTurmas: React.FC = () => {
         const carregarDados = async () => {
             try {
                 setCarregando(true);
-                const [dadosTurmas, dadosAgendamentos] = await Promise.all([
-                    buscarTurmas(),
-                    buscarAgendamentos()
-                ]);
+                let dadosTurmas: Turma[];
+                let dadosAgendamentos: Agendamento[];
+
+                if (isDemoMode) {
+                    dadosTurmas = toArray(JSON.parse(localStorage.getItem('demoTurmas') || '[]')) ? JSON.parse(localStorage.getItem('demoTurmas') || '[]') : [];
+                    dadosAgendamentos = toArray(JSON.parse(localStorage.getItem('demoAgendamentos') || '[]')) ? JSON.parse(localStorage.getItem('demoAgendamentos') || '[]') : [];
+                } else {
+                    const [apiTurmas, apiAgendamentos] = await Promise.all([
+                        buscarTurmas(),
+                        buscarAgendamentos()
+                    ]);
+                    dadosTurmas = toArray(apiTurmas) ? apiTurmas : [];
+                    dadosAgendamentos = toArray(apiAgendamentos) ? apiAgendamentos : [];
+                }
+
                 setTurmas(dadosTurmas);
                 setAgendamentos(dadosAgendamentos);
                 setErro(null);
@@ -37,10 +53,19 @@ const ListaTurmas: React.FC = () => {
             }
         };
         carregarDados();
-    }, []);
+    }, []); 
 
     const handleDeletarTurma = async (id: string) => {
-        if (window.confirm('Tem certeza que deseja excluir esta turma? Esta ação não pode ser desfeita.')) {
+        if (window.confirm('Tem certeza que deseja excluir esta turma?')) {
+            if (isDemoMode) {
+                const turmasAtuais = toArray(JSON.parse(localStorage.getItem('demoTurmas') || '[]')) ? JSON.parse(localStorage.getItem('demoTurmas') || '[]') : [];
+                const turmasAtualizadas = turmasAtuais.filter((t: Turma) => t.id !== id);
+                localStorage.setItem('demoTurmas', JSON.stringify(turmasAtualizadas));
+                setTurmas(turmasAtualizadas);
+                alert('Demonstração: Turma removida!');
+                return;
+            }
+
             try {
                 await deletarTurma(id);
                 setTurmas(turmas.filter(t => t.id !== id));
@@ -51,6 +76,21 @@ const ListaTurmas: React.FC = () => {
     };
     
     const handleSalvarTurma = async (dados: DadosCriacaoTurma, id?: string) => {
+        if (isDemoMode) {
+            const turmasAtuais = toArray(JSON.parse(localStorage.getItem('demoTurmas') || '[]')) ? JSON.parse(localStorage.getItem('demoTurmas') || '[]') : [];
+            let turmasAtualizadas;
+            if (id) {
+                turmasAtualizadas = turmasAtuais.map((t: Turma) => t.id === id ? { ...t, ...dados } : t);
+            } else {
+                const novaTurma = { ...dados, id: `temp_${Date.now()}` };
+                turmasAtualizadas = [...turmasAtuais, novaTurma];
+            }
+            localStorage.setItem('demoTurmas', JSON.stringify(turmasAtualizadas));
+            setTurmas(turmasAtualizadas);
+            setModalAberto(false);
+            alert('Demonstração: Turma salva!');
+            return;
+        }
         try {
             if (id) {
                 const turmaAtualizada = await atualizarTurma(id, dados);
@@ -75,8 +115,8 @@ const ListaTurmas: React.FC = () => {
         setModalAberto(true);
     };
 
-    if (carregando) return <p>Carregando turmas...</p>;
-    if (erro) return <p style={{ color: 'red' }}>{erro}</p>;
+    if (carregando) return <p style={{ textAlign: 'center', padding: '2rem' }}>Carregando turmas...</p>;
+    if (erro) return <p style={{ color: 'red', textAlign: 'center', padding: '2rem' }}>{erro}</p>;
 
     return (
         <>
@@ -95,6 +135,8 @@ const ListaTurmas: React.FC = () => {
             <div className="lt-turmas-grid">
                 {turmas.map(turma => {
                     const praticasCount = agendamentos.filter(ag => ag.turmaCodigo === turma.codigo).length;
+                    
+                    const isTempItem = String(turma.id).startsWith('temp_');
 
                     return (
                         <div key={turma.id} className="lt-turma-card">
@@ -122,7 +164,16 @@ const ListaTurmas: React.FC = () => {
                                 </div>
                             </div>
                             <div className="lt-turma-card-footer">
-                                <button className="lt-turma-button" onClick={() => navigate(`/minhas-turmas/${turma.id}/praticas`)}>
+                                <button
+                                    className={`lt-turma-button ${isTempItem ? 'disabled' : ''}`}
+                                    onClick={() => {
+                                        if (isTempItem) {
+                                            alert("Não é possível ver detalhes de itens criados na Demonstração.");
+                                        } else {
+                                            navigate(`/minhas-turmas/${turma.id}/praticas`);
+                                        }
+                                    }}
+                                >
                                     Práticas
                                 </button>
                             </div>

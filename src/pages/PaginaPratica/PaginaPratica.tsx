@@ -6,6 +6,8 @@ import { Clock, BarChart, Check, List, Trash2, ShieldAlert, Printer, Edit, Save,
 import { buscarPraticaPorId, Pratica, atualizarPratica } from '../../services/PraticaService';
 import { buscarComentarios, criarComentario, Comentario } from '../../services/comentarioService';
 
+const toArray = (data: any): data is any[] => Array.isArray(data);
+
 interface Seguranca { epis: string[]; cuidados: string[]; }
 interface Material { nome: string; qtd: number | string; }
 
@@ -20,22 +22,56 @@ const PaginaPratica: React.FC = () => {
     const [formData, setFormData] = useState<Partial<Pratica>>({});
     const [novoComentario, setNovoComentario] = useState('');
 
+    const userEmail = localStorage.getItem('userEmail');
+    const isDemoMode = userEmail === 'admin@email.com';
+
     const userRole = localStorage.getItem('userRole');
     const isManager = userRole === 'ADMIN';
 
     useEffect(() => {
         if (!praticaId) return;
+
         const carregarDados = async () => {
             try {
                 setCarregando(true);
-                const [dadosPratica, dadosComentarios] = await Promise.all([
-                    buscarPraticaPorId(praticaId),
-                    buscarComentarios(praticaId)
-                ]);
+                let dadosPratica: Pratica | null = null;
+                let dadosComentarios: Comentario[] = [];
+
+                if (isDemoMode) {
+                    const praticasLocais = toArray(JSON.parse(localStorage.getItem('demoPraticas') || '[]')) ? JSON.parse(localStorage.getItem('demoPraticas') || '[]') : [];
+                    dadosPratica = praticasLocais.find((p: Pratica) => p.id === praticaId) || null;
+                    
+                    const comentariosStorageKey = `demoComentarios_${praticaId}`;
+                    const comentariosLocais = toArray(JSON.parse(localStorage.getItem(comentariosStorageKey) || '[]')) ? JSON.parse(localStorage.getItem(comentariosStorageKey) || '[]') : [];
+                    dadosComentarios = comentariosLocais;
+                    
+                    if (!dadosPratica) {
+                        dadosPratica = await buscarPraticaPorId(praticaId);
+                    }
+                    if (dadosComentarios.length === 0) {
+                        const comentariosApi = await buscarComentarios(praticaId);
+                        dadosComentarios = toArray(comentariosApi) ? comentariosApi : [];
+                        localStorage.setItem(comentariosStorageKey, JSON.stringify(dadosComentarios));
+                    }
+
+                } else {
+                    const [apiPratica, apiComentarios] = await Promise.all([
+                        buscarPraticaPorId(praticaId),
+                        buscarComentarios(praticaId)
+                    ]);
+                    dadosPratica = apiPratica;
+                    dadosComentarios = toArray(apiComentarios) ? apiComentarios : [];
+                }
+
                 setPratica(dadosPratica);
-                setFormData(dadosPratica);
+                setFormData(dadosPratica || {});
                 setComentarios(dadosComentarios);
                 setErro(null);
+
+                if (!dadosPratica) {
+                    setErro("Prática não encontrada.");
+                }
+
             } catch (err) {
                 setErro("Não foi possível carregar os dados. Verifique a URL e tente novamente.");
             } finally {
@@ -51,6 +87,19 @@ const PaginaPratica: React.FC = () => {
 
     const handleSave = async () => {
         if (!praticaId) return;
+
+        if (isDemoMode) {
+            const praticasLocais = toArray(JSON.parse(localStorage.getItem('demoPraticas') || '[]')) ? JSON.parse(localStorage.getItem('demoPraticas') || '[]') : [];
+            const praticasAtualizadas = praticasLocais.map((p: Pratica) => 
+                p.id === praticaId ? { ...p, ...formData } as Pratica : p
+            );
+            localStorage.setItem('demoPraticas', JSON.stringify(praticasAtualizadas));
+            setPratica(praticasAtualizadas.find((p: Pratica) => p.id === praticaId) || null);
+            setIsEditing(false);
+            alert('Demonstração: Alterações salvas!');
+            return;
+        }
+
         try {
             const praticaAtualizada = await atualizarPratica(praticaId, formData);
             setPratica(praticaAtualizada);
@@ -62,6 +111,24 @@ const PaginaPratica: React.FC = () => {
 
     const handlePostComment = async () => {
         if (!praticaId || !novoComentario.trim()) return;
+
+        if (isDemoMode) {
+            const comentariosStorageKey = `demoComentarios_${praticaId}`;
+            const comentariosAtuais = toArray(JSON.parse(localStorage.getItem(comentariosStorageKey) || '[]')) ? JSON.parse(localStorage.getItem(comentariosStorageKey) || '[]') : [];
+            const comentarioAdicionado: Comentario = {
+                id: `temp_comm_${Date.now()}`,
+                conteudo: novoComentario,
+                nomeAutor: 'Usuário Demo',
+                dataCriacao: new Date().toISOString()
+            };
+            const comentariosAtualizados = [comentarioAdicionado, ...comentariosAtuais];
+            localStorage.setItem(comentariosStorageKey, JSON.stringify(comentariosAtualizados));
+            setComentarios(comentariosAtualizados);
+            setNovoComentario('');
+            alert('Demonstração: Comentário salvo!');
+            return;
+        }
+
         try {
             const comentarioAdicionado = await criarComentario(praticaId, { conteudo: novoComentario });
             setComentarios([comentarioAdicionado, ...comentarios]);
@@ -115,7 +182,7 @@ const PaginaPratica: React.FC = () => {
                 <div className="pp-overview-text">
                     <h3 className="pp-section-title">Objetivos</h3>
                     {isEditing ? <textarea value={formData.objetivosJson ? JSON.parse(formData.objetivosJson).join('\n') : ''} onChange={e => handleFormChange('objetivosJson', JSON.stringify(e.target.value.split('\n')))} className="pp-edit-textarea" rows={5}></textarea> : 
-                        <ul className="pp-objetivos-list">{objetivos.map(obj => <li key={obj}><Check size={16} /> {obj}</li>)}</ul>}
+                        <ul className="pp-objetivos-list">{objetivos.map((obj: string) => <li key={obj}><Check size={16} /> {obj}</li>)}</ul>}
                 </div>
                 <div className="pp-video-wrapper">
                     {isEditing ? <input type="text" value={formData.videoUrl || ''} onChange={e => handleFormChange('videoUrl', e.target.value)} placeholder="URL do vídeo (embed)" className="pp-edit-input" /> : 
@@ -128,7 +195,17 @@ const PaginaPratica: React.FC = () => {
                     <div className="pp-card">
                         <h3 className="pp-section-title">Procedimento</h3>
                         {isEditing ? <textarea value={formData.procedimentoJson ? JSON.parse(formData.procedimentoJson).join('\n') : ''} onChange={e => handleFormChange('procedimentoJson', JSON.stringify(e.target.value.split('\n')))} className="pp-edit-textarea" rows={15}></textarea> : 
-                             <ol className="pp-procedimento-list">{procedimento.map((p, i) => <li key={i}><div className="pp-passo-numero">{i + 1}</div><p>{p}</p></li>)}</ol>}
+                            (
+                                <ol className="pp-procedimento-list">
+                                    {procedimento.map((p: string, i: number) => (
+                                        <li key={i}>
+                                            <div className="pp-passo-numero">{i + 1}</div>
+                                            <p>{p}</p>
+                                        </li>
+                                    ))}
+                                </ol>
+                            )
+                        }
                     </div>
                 </div>
                 <div className="pp-apoio-coluna">
@@ -137,10 +214,10 @@ const PaginaPratica: React.FC = () => {
                          <h3 className="pp-section-title-icon"><ShieldAlert /> Segurança</h3>
                          {isEditing ? <textarea placeholder="Edite EPIs e Cuidados como JSON" defaultValue={formData.segurancaJson} onChange={e => handleFormChange('segurancaJson', e.target.value)} className="pp-edit-textarea" rows={8}></textarea> :
                          <>
-                            <h4>EPIs:</h4>
-                            <ul className="pp-apoio-list">{seguranca.epis.map(e => <li key={e}>{e}</li>)}</ul>
-                            <h4>Cuidados:</h4>
-                            <ul className="pp-apoio-list">{seguranca.cuidados.map(c => <li key={c}>{c}</li>)}</ul>
+                             <h4>EPIs:</h4>
+                             <ul className="pp-apoio-list">{seguranca.epis.map((e: string) => <li key={e}>{e}</li>)}</ul>
+                             <h4>Cuidados:</h4>
+                             <ul className="pp-apoio-list">{seguranca.cuidados.map((c: string) => <li key={c}>{c}</li>)}</ul>
                          </>}
                     </div>
                     <div className="pp-card">
@@ -169,11 +246,11 @@ const PaginaPratica: React.FC = () => {
                             <>
                                 <h4>Vidrarias e Equipamentos:</h4>
                                 <ul className="pp-apoio-list">
-                                    {materiais.map(mat => <li key={mat.nome}>{mat.qtd}x - {mat.nome}</li>)}
+                                    {materiais.map((mat: Material) => <li key={mat.nome}>{mat.qtd}x - {mat.nome}</li>)}
                                 </ul>
                                 <h4>Reagentes:</h4>
                                 <ul className="pp-apoio-list">
-                                    {reagentes.map(reag => <li key={reag.nome}>{reag.qtd} - {reag.nome}</li>)}
+                                    {reagentes.map((reag: Material) => <li key={reag.nome}>{reag.qtd} - {reag.nome}</li>)}
                                 </ul>
                             </>
                         )}
@@ -201,7 +278,7 @@ const PaginaPratica: React.FC = () => {
                     <button className="action-button" onClick={handlePostComment}><Send size={16} /> Publicar</button>
                 </div>
                 <div className="pp-comments-list">
-                    {comentarios.map(c => <div key={c.id} className="pp-comment-item"><p className="pp-comment-content">{c.conteudo}</p><p className="pp-comment-meta">por <strong>{c.nomeAutor}</strong> em {new Date(c.dataCriacao).toLocaleString('pt-BR', { day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' })}</p></div>)}
+                    {comentarios.map((c: Comentario) => <div key={c.id} className="pp-comment-item"><p className="pp-comment-content">{c.conteudo}</p><p className="pp-comment-meta">por <strong>{c.nomeAutor}</strong> em {new Date(c.dataCriacao).toLocaleString('pt-BR', { day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' })}</p></div>)}
                 </div>
             </div>
         </div>

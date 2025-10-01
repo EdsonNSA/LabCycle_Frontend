@@ -6,6 +6,8 @@ import {
 
 import { buscarReagentes, criarReagente, atualizarReagente, deletarReagente, Reagente } from '../../services/reagenteService';
 
+const toArray = (data: any): data is any[] => Array.isArray(data);
+
 const GestaoInventario: React.FC = () => {
     const [reagentes, setReagentes] = useState<Reagente[]>([]);
     const [carregando, setCarregando] = useState(true);
@@ -15,13 +17,31 @@ const GestaoInventario: React.FC = () => {
     const [termoBusca, setTermoBusca] = useState('');
     const [filtroStatus, setFiltroStatus] = useState('');
 
+    const userEmail = localStorage.getItem('userEmail');
+    const isDemoMode = userEmail === 'admin@email.com';
+
     const userRole = localStorage.getItem('userRole');
     const isManager = userRole === 'ADMIN';
 
     const carregarReagentes = async () => {
         try {
             setCarregando(true);
-            const dados = await buscarReagentes();
+            let dados: Reagente[];
+
+            if (isDemoMode) {
+                const dadosLocais = localStorage.getItem('demoReagentes');
+                if (dadosLocais) {
+                    dados = toArray(JSON.parse(dadosLocais)) ? JSON.parse(dadosLocais) : [];
+                } else {
+                    const dadosApi = await buscarReagentes();
+                    dados = toArray(dadosApi) ? dadosApi : [];
+                    localStorage.setItem('demoReagentes', JSON.stringify(dados));
+                }
+            } else {
+                const dadosApi = await buscarReagentes();
+                dados = toArray(dadosApi) ? dadosApi : [];
+            }
+
             setReagentes(dados);
             setErro(null);
         } catch (error) {
@@ -52,19 +72,32 @@ const GestaoInventario: React.FC = () => {
     };
 
     const handleSalvar = async (dadosDoFormulario: Reagente) => {
-        try {
-            const dadosParaSalvar = { ...dadosDoFormulario };
-            if (!dadosParaSalvar.id) {
-                delete dadosParaSalvar.id;
-            }
+        if (isDemoMode) {
+            const reagentesAtuais = toArray(JSON.parse(localStorage.getItem('demoReagentes') || '[]')) ? JSON.parse(localStorage.getItem('demoReagentes') || '[]') : [];
+            let reagentesAtualizados;
 
-            if (reagenteAtual && reagenteAtual.id) {
-                await atualizarReagente(reagenteAtual.id, dadosParaSalvar);
+            if (reagenteAtual?.id) {
+                reagentesAtualizados = reagentesAtuais.map((r: Reagente) => r.id === reagenteAtual.id ? { ...dadosDoFormulario, id: r.id } : r);
             } else {
-                await criarReagente(dadosParaSalvar);
+                const novoReagente = { ...dadosDoFormulario, id: `temp_${Date.now()}` };
+                reagentesAtualizados = [...reagentesAtuais, novoReagente];
+            }
+            localStorage.setItem('demoReagentes', JSON.stringify(reagentesAtualizados));
+            setReagentes(reagentesAtualizados);
+            fecharModal();
+            alert("Demonstração: Reagente salvo!");
+            return;
+        }
+
+        try {
+            if (reagenteAtual?.id) {
+                const reagenteAtualizado = await atualizarReagente(reagenteAtual.id, dadosDoFormulario);
+                setReagentes(reagentes.map(r => r.id === reagenteAtual.id ? reagenteAtualizado : r));
+            } else {
+                const novoReagente = await criarReagente(dadosDoFormulario);
+                setReagentes([...reagentes, novoReagente]);
             }
             fecharModal();
-            carregarReagentes();
         } catch (error) {
             console.error(error);
             alert('Ocorreu um erro ao salvar o reagente.');
@@ -73,9 +106,18 @@ const GestaoInventario: React.FC = () => {
 
     const handleDeletar = async (id: string) => {
         if (window.confirm('Tem certeza que deseja deletar este reagente?')) {
+            if (isDemoMode) {
+                const reagentesAtuais = toArray(JSON.parse(localStorage.getItem('demoReagentes') || '[]')) ? JSON.parse(localStorage.getItem('demoReagentes') || '[]') : [];
+                const reagentesAtualizados = reagentesAtuais.filter((r: Reagente) => r.id !== id);
+                localStorage.setItem('demoReagentes', JSON.stringify(reagentesAtualizados));
+                setReagentes(reagentesAtualizados);
+                alert("Demonstração: Reagente removido!");
+                return;
+            }
+            
             try {
                 await deletarReagente(id);
-                carregarReagentes();
+                setReagentes(reagentes.filter(r => r.id !== id));
             } catch (error) {
                 console.error(error);
                 alert('Ocorreu um erro ao deletar o reagente.');
@@ -208,17 +250,14 @@ const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, onSave, onClose
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         let { name, value } = e.target;
-
         if (name === 'dataValidade' && value) {
             let [ano] = value.split('-');
-            
             if (ano.length > 4) {
                 ano = ano.slice(0, 4);
                 value = ano + value.substring(ano.length);
             }
         }
-
-        setFormData(prev => ({ ...prev, [name]: name === 'quantidade' ? parseFloat(value) : value }));
+        setFormData(prev => ({ ...prev, [name]: name === 'quantidade' ? parseFloat(value) || 0 : value }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -250,25 +289,13 @@ const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, onSave, onClose
                         <div className="gi-form-group">
                             <label htmlFor="unidade">Unidade</label>
                             <select id="unidade" name="unidade" value={formData.unidade} onChange={handleChange} required>
-                                <option value="mL">mL</option>
-                                <option value="L">L</option>
-                                <option value="g">g</option>
-                                <option value="kg">kg</option>
+                                <option value="mL">mL</option><option value="L">L</option><option value="g">g</option><option value="kg">kg</option>
                             </select>
                         </div>
                     </div>
                     <div className="gi-form-group">
                         <label htmlFor="dataValidade">Data de Validade</label>
-                        <input 
-                            type="date" 
-                            id="dataValidade" 
-                            name="dataValidade" 
-                            value={formData.dataValidade} 
-                            onChange={handleChange} 
-                            min={hoje} 
-                            max="9999-12-31"
-                            required 
-                        />
+                        <input type="date" id="dataValidade" name="dataValidade" value={formData.dataValidade} onChange={handleChange} min={hoje} max="9999-12-31" required />
                     </div>
                     <div className="gi-form-group">
                         <label htmlFor="localizacao">Localização</label>
@@ -277,10 +304,7 @@ const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, onSave, onClose
                     <div className="gi-form-group">
                         <label htmlFor="status">Status</label>
                         <select id="status" name="status" value={formData.status} onChange={handleChange} required>
-                            <option value="OK">OK</option>
-                            <option value="BAIXO_ESTOQUE">Baixo Estoque</option>
-                            <option value="VENCENDO">Vencendo</option>
-                            <option value="VENCIDO">Vencido</option>
+                            <option value="OK">OK</option><option value="BAIXO_ESTOQUE">Baixo Estoque</option><option value="VENCENDO">Vencendo</option><option value="VENCIDO">Vencido</option>
                         </select>
                     </div>
                     <div className="gi-modal-footer">
@@ -292,6 +316,5 @@ const ModalReagente: React.FC<ModalReagenteProps> = ({ reagente, onSave, onClose
         </div>
     );
 };
-
 
 export default GestaoInventario;

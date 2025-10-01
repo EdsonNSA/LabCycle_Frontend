@@ -6,6 +6,8 @@ import { buscarPraticas, Pratica } from '../../services/PraticaService';
 import './GerenciarPraticas.css';
 import { CalendarPlus, ClipboardList, ArrowLeft, X } from 'lucide-react';
 
+const toArray = (data: any): data is any[] => Array.isArray(data);
+
 interface ModalAgendamentoProps {
     isOpen: boolean;
     turma: Turma;
@@ -68,17 +70,7 @@ const ModalAgendamento: React.FC<ModalAgendamentoProps> = ({ isOpen, turma, prat
                                 type="datetime-local" 
                                 id="dataHora" 
                                 value={dataHora} 
-                                onChange={(e) => {
-                                    let value = e.target.value;
-                                    if (value) {
-                                        let [ano] = value.split('-');
-                                        if (ano.length > 4) {
-                                            ano = ano.slice(0, 4);
-                                            value = ano + value.substring(ano.length);
-                                        }
-                                    }
-                                    setDataHora(value);
-                                }} 
+                                onChange={(e) => setDataHora(e.target.value)} 
                                 min={agoraString}
                                 max="9999-12-31T23:59"
                                 required 
@@ -106,6 +98,8 @@ const GerenciarPraticas: React.FC = () => {
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState<string | null>(null);
     const [modalAberto, setModalAberto] = useState(false); 
+    const userEmail = localStorage.getItem('userEmail');
+    const isDemoMode = userEmail === 'admin@email.com';
 
     useEffect(() => {
         if (!turmaId) return;
@@ -113,15 +107,39 @@ const GerenciarPraticas: React.FC = () => {
         const carregarDados = async () => {
             try {
                 setCarregando(true);
-                const [dadosTurma, dadosAgendamentos, dadosPraticas] = await Promise.all([
-                    buscarTurmaPorId(turmaId),
-                    buscarAgendamentosPorTurma(turmaId),
-                    buscarPraticas() 
-                ]);
+                let dadosTurma: Turma | null;
+                let dadosAgendamentos: Agendamento[];
+                let dadosPraticas: Pratica[];
+
+                if (isDemoMode) {
+                    const turmasLocais = toArray(JSON.parse(localStorage.getItem('demoTurmas') || '[]')) ? JSON.parse(localStorage.getItem('demoTurmas') || '[]') : [];
+                    dadosTurma = turmasLocais.find((t: Turma) => t.id === turmaId) || null;
+
+                    const agendamentosLocais = toArray(JSON.parse(localStorage.getItem('demoAgendamentos') || '[]')) ? JSON.parse(localStorage.getItem('demoAgendamentos') || '[]') : [];
+                    dadosAgendamentos = agendamentosLocais.filter((a: Agendamento) => a.turmaCodigo === dadosTurma?.codigo);
+
+                    dadosPraticas = toArray(JSON.parse(localStorage.getItem('demoPraticas') || '[]')) ? JSON.parse(localStorage.getItem('demoPraticas') || '[]') : [];
+
+                } else {
+                    const [apiTurma, apiAgendamentos, apiPraticas] = await Promise.all([
+                        buscarTurmaPorId(turmaId),
+                        buscarAgendamentosPorTurma(turmaId),
+                        buscarPraticas() 
+                    ]);
+                    dadosTurma = apiTurma;
+                    dadosAgendamentos = toArray(apiAgendamentos) ? apiAgendamentos : [];
+                    dadosPraticas = toArray(apiPraticas) ? apiPraticas : [];
+                }
+                
                 setTurma(dadosTurma);
                 setAgendamentos(dadosAgendamentos);
                 setPraticas(dadosPraticas);
                 setErro(null);
+
+                if (!dadosTurma) {
+                    setErro("Turma não encontrada.");
+                }
+
             } catch (err) {
                 setErro("Não foi possível carregar os dados da turma.");
             } finally {
@@ -133,18 +151,40 @@ const GerenciarPraticas: React.FC = () => {
     }, [turmaId]);
 
     const handleSalvarAgendamento = async (dados: Omit<DadosAgendamento, 'turmaId'>) => {
-        if (!turmaId) return;
-        try {
-            await criarAgendamento({ ...dados, turmaId });
+        if (!turmaId || !turma) return;
+
+        if (isDemoMode) {
+            const agendamentosAtuais = toArray(JSON.parse(localStorage.getItem('demoAgendamentos') || '[]')) ? JSON.parse(localStorage.getItem('demoAgendamentos') || '[]') : [];
+            const praticaSelecionada = praticas.find(p => p.id === dados.praticaId);
+
+            const novoAgendamento: Agendamento = {
+                id: `temp_${Date.now()}`,
+                dataHora: dados.dataHora,
+                turmaCodigo: turma.codigo,
+                disciplinaNome: turma.nomeDisciplina,
+                pratica: {
+                    id: praticaSelecionada?.id || '',
+                    titulo: praticaSelecionada?.titulo || 'Prática não encontrada'
+                }
+            };
+            
+            const agendamentosAtualizados = [...agendamentosAtuais, novoAgendamento];
+            localStorage.setItem('demoAgendamentos', JSON.stringify(agendamentosAtualizados));
+            setAgendamentos([...agendamentos, novoAgendamento]);
             setModalAberto(false);
-            const dadosAgendamentos = await buscarAgendamentosPorTurma(turmaId);
-            setAgendamentos(dadosAgendamentos);
+            alert('Demonstração: Prática agendada!');
+            return;
+        }
+
+        try {
+            const novoAgendamento = await criarAgendamento({ ...dados, turmaId });
+            setAgendamentos(prevAgendamentos => [...prevAgendamentos, novoAgendamento]);
+            setModalAberto(false);
             alert('Prática agendada com sucesso!');
         } catch (error) {
             alert('Falha ao agendar a prática.');
         }
     };
-
 
     if (carregando) return <p>Carregando práticas da turma...</p>;
     if (erro) return <p style={{ color: 'red' }}>{erro}</p>;
@@ -182,9 +222,10 @@ const GerenciarPraticas: React.FC = () => {
                             <div className="gp-pratica-actions">
                                 <button 
                                     className="gp-details-button"
-                                    disabled={!agendamento.pratica?.id} 
+                                    disabled={!agendamento.pratica?.id || String(agendamento.pratica.id).startsWith('temp_')} 
+                                    title={String(agendamento.pratica.id).startsWith('temp_') ? "Não é possível ver detalhes de práticas criadas no Modo Demo" : "Ver detalhes da prática"}
                                     onClick={() => {
-                                        if (agendamento.pratica?.id) {
+                                        if (agendamento.pratica?.id && !String(agendamento.pratica.id).startsWith('temp_')) {
                                             navigate(`/praticas/${agendamento.pratica.id}`);
                                         }
                                     }}

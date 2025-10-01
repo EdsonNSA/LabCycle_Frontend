@@ -4,11 +4,15 @@ import ModalPratica from './ModalPratica';
 import './GestaoPraticas.css';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 
+const toArray = (data: any): data is any[] => Array.isArray(data);
+
 const GestaoPraticas: React.FC = () => {
     const [praticas, setPraticas] = useState<Pratica[]>([]);
     const [carregando, setCarregando] = useState(true);
     const [modalAberto, setModalAberto] = useState(false);
     const [praticaEmEdicao, setPraticaEmEdicao] = useState<Pratica | null>(null);
+    const userEmail = localStorage.getItem('userEmail');
+    const isDemoMode = userEmail === 'admin@email.com';
 
     const userRole = localStorage.getItem('userRole');
     const isManager = userRole === 'ADMIN';
@@ -16,7 +20,21 @@ const GestaoPraticas: React.FC = () => {
     const carregarPraticas = async () => {
         try {
             setCarregando(true);
-            const dados = await buscarPraticas();
+            let dados: Pratica[];
+
+            if (isDemoMode) {
+                const dadosLocais = localStorage.getItem('demoPraticas');
+                if (dadosLocais) {
+                    dados = toArray(JSON.parse(dadosLocais)) ? JSON.parse(dadosLocais) : [];
+                } else {
+                    const dadosApi = await buscarPraticas();
+                    dados = toArray(dadosApi) ? dadosApi : [];
+                    localStorage.setItem('demoPraticas', JSON.stringify(dados));
+                }
+            } else {
+                const dadosApi = await buscarPraticas();
+                dados = toArray(dadosApi) ? dadosApi : [];
+            }
             setPraticas(dados);
         } catch (error) {
             console.error("Falha ao carregar práticas", error);
@@ -31,25 +49,51 @@ const GestaoPraticas: React.FC = () => {
     }, []);
 
     const handleSave = async (dados: DadosCadastroPratica, id?: string) => {
+        if (isDemoMode) {
+            const praticasAtuais = toArray(JSON.parse(localStorage.getItem('demoPraticas') || '[]')) ? JSON.parse(localStorage.getItem('demoPraticas') || '[]') : [];
+            let praticasAtualizadas;
+
+            if (id) {
+                praticasAtualizadas = praticasAtuais.map((p: Pratica) => p.id === id ? { ...p, ...dados } : p);
+            } else {
+                const novaPratica = { ...dados, id: `temp_${Date.now()}` };
+                praticasAtualizadas = [...praticasAtuais, novaPratica];
+            }
+            localStorage.setItem('demoPraticas', JSON.stringify(praticasAtualizadas));
+            setPraticas(praticasAtualizadas);
+            setModalAberto(false);
+            alert('Demonstração: Prática salva!');
+            return;
+        }
+
         try {
             if (id) {
-                await atualizarPratica(id, dados);
+                const praticaAtualizada = await atualizarPratica(id, dados);
+                setPraticas(praticas.map(p => p.id === id ? praticaAtualizada : p));
             } else {
-                await criarPratica(dados);
+                const novaPratica = await criarPratica(dados);
+                setPraticas([...praticas, novaPratica]);
             }
             setModalAberto(false);
-            carregarPraticas(); 
         } catch (error) {
             alert("Falha ao salvar a prática.");
         }
     };
 
-
     const handleDelete = async (id: string) => {
         if (window.confirm("Tem certeza que deseja excluir esta prática? Esta ação é irreversível.")) {
+            if (isDemoMode) {
+                const praticasAtuais = toArray(JSON.parse(localStorage.getItem('demoPraticas') || '[]')) ? JSON.parse(localStorage.getItem('demoPraticas') || '[]') : [];
+                const praticasAtualizadas = praticasAtuais.filter((p: Pratica) => p.id !== id);
+                localStorage.setItem('demoPraticas', JSON.stringify(praticasAtualizadas));
+                setPraticas(praticasAtualizadas);
+                alert('Demonstração: Prática excluída!');
+                return;
+            }
+
             try {
                 await deletarPratica(id);
-                carregarPraticas(); 
+                setPraticas(praticas.filter(p => p.id !== id));
             } catch (error) {
                 alert("Falha ao excluir a prática.");
             }
@@ -89,7 +133,7 @@ const GestaoPraticas: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {praticas.map(p => (
+                    {praticas.map((p: Pratica) => (
                         <tr key={p.id}>
                             <td>{p.titulo}</td>
                             <td>{p.disciplina}</td>
