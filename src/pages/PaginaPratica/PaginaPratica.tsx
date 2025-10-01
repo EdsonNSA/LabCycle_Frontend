@@ -79,7 +79,7 @@ const PaginaPratica: React.FC = () => {
             }
         };
         carregarDados();
-    }, [praticaId]);
+    }, [praticaId, isDemoMode]);
 
     const handleFormChange = (field: keyof Pratica, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));

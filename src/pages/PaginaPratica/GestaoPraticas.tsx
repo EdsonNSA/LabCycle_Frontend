@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // 1. useCallback importado
 import { buscarPraticas, criarPratica, atualizarPratica, deletarPratica, Pratica, DadosCadastroPratica } from '../../services/PraticaService';
 import ModalPratica from './ModalPratica';
 import './GestaoPraticas.css';
@@ -11,13 +11,14 @@ const GestaoPraticas: React.FC = () => {
     const [carregando, setCarregando] = useState(true);
     const [modalAberto, setModalAberto] = useState(false);
     const [praticaEmEdicao, setPraticaEmEdicao] = useState<Pratica | null>(null);
+    
     const userEmail = localStorage.getItem('userEmail');
     const isDemoMode = userEmail === 'admin@email.com';
 
     const userRole = localStorage.getItem('userRole');
     const isManager = userRole === 'ADMIN';
 
-    const carregarPraticas = async () => {
+    const carregarPraticas = useCallback(async () => {
         try {
             setCarregando(true);
             let dados: Pratica[];
@@ -42,11 +43,11 @@ const GestaoPraticas: React.FC = () => {
         } finally {
             setCarregando(false);
         }
-    };
+    }, [isDemoMode]); 
 
     useEffect(() => {
         carregarPraticas();
-    }, []);
+    }, [carregarPraticas]);
 
     const handleSave = async (dados: DadosCadastroPratica, id?: string) => {
         if (isDemoMode) {

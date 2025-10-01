@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './PainelResponsavel.css';
 import {
     PlusCircle,
@@ -40,7 +40,7 @@ const PainelResponsavel: React.FC = () => {
     const userRole = localStorage.getItem('userRole');
     const isManager = userRole === 'ADMIN';
 
-    const carregarDadosIniciais = async (forceApi = false) => {
+    const carregarDadosIniciais = useCallback(async (forceApi = false) => {
         try {
             setCarregando(true);
             
@@ -48,15 +48,11 @@ const PainelResponsavel: React.FC = () => {
                 if (isDemoMode && !forceApi) {
                     const dadosLocais = localStorage.getItem(chaveStorage);
                     if (dadosLocais) {
-                        console.log(`Carregando '${chaveStorage}' do localStorage.`);
                         return JSON.parse(dadosLocais);
                     }
                 }
-                
-                console.log(`Buscando '${chaveStorage}' da API...`);
                 const dadosApi = await funcaoBusca() || [];
                 const dadosValidos = toArray(dadosApi) ? dadosApi : [];
-                
                 if (isDemoMode) {
                     localStorage.setItem(chaveStorage, JSON.stringify(dadosValidos));
                 }
@@ -82,11 +78,11 @@ const PainelResponsavel: React.FC = () => {
         } finally {
             setCarregando(false);
         }
-    };
+    }, [isDemoMode]); 
 
     useEffect(() => {
         carregarDadosIniciais();
-    }, []);
+    }, [carregarDadosIniciais]);
 
     const handleResetDemo = () => {
         if (window.confirm("Isso irá apagar todas as alterações locais e restaurar os dados originais. Deseja continuar?")) {
@@ -180,10 +176,10 @@ const PainelResponsavel: React.FC = () => {
 
         try {
             if (id) {
-                const agendamentoAtualizado = await atualizarAgendamento(id, dados);
+                await atualizarAgendamento(id, dados);
                 await carregarDadosIniciais(true); 
             } else {
-                const novoAgendamento = await criarAgendamento(dados);
+                await criarAgendamento(dados);
                 await carregarDadosIniciais(true);
             }
             fecharModalAgendamento();

@@ -59,7 +59,7 @@ const ModalAgendamento: React.FC<ModalAgendamentoProps> = ({ isOpen, turma, prat
                             <label htmlFor="praticaId">Prática</label>
                             <select id="praticaId" value={praticaId} onChange={(e) => setPraticaId(e.target.value)} required>
                                 <option value="" disabled>Selecione uma prática</option>
-                                {praticas.map(pratica => (
+                                {praticas.map((pratica: Pratica) => (
                                     <option key={pratica.id} value={pratica.id}>{pratica.titulo}</option>
                                 ))}
                             </select>
@@ -98,6 +98,7 @@ const GerenciarPraticas: React.FC = () => {
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState<string | null>(null);
     const [modalAberto, setModalAberto] = useState(false); 
+    
     const userEmail = localStorage.getItem('userEmail');
     const isDemoMode = userEmail === 'admin@email.com';
 
@@ -148,7 +149,7 @@ const GerenciarPraticas: React.FC = () => {
         };
 
         carregarDados();
-    }, [turmaId]);
+    }, [turmaId, isDemoMode]);
 
     const handleSalvarAgendamento = async (dados: Omit<DadosAgendamento, 'turmaId'>) => {
         if (!turmaId || !turma) return;

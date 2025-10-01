@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; 
 import './GestaoInventario.css';
 import {
     Search, PlusCircle, Filter, Edit, Trash2, X
@@ -23,7 +23,7 @@ const GestaoInventario: React.FC = () => {
     const userRole = localStorage.getItem('userRole');
     const isManager = userRole === 'ADMIN';
 
-    const carregarReagentes = async () => {
+    const carregarReagentes = useCallback(async () => {
         try {
             setCarregando(true);
             let dados: Reagente[];
@@ -50,11 +50,11 @@ const GestaoInventario: React.FC = () => {
         } finally {
             setCarregando(false);
         }
-    };
+    }, [isDemoMode]);
 
     useEffect(() => {
         carregarReagentes();
-    }, []);
+    }, [carregarReagentes]);
 
     const abrirModalParaCriar = () => {
         setReagenteAtual(null);
@@ -186,7 +186,7 @@ const GestaoInventario: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {reagentesFiltrados.map(item => (
+                            {reagentesFiltrados.map((item: Reagente) => (
                                 <tr key={item.id}>
                                     <td>
                                         <div className="gi-reagente-info">

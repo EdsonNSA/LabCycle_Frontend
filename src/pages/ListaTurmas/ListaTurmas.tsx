@@ -53,7 +53,7 @@ const ListaTurmas: React.FC = () => {
             }
         };
         carregarDados();
-    }, []); 
+    }, [isDemoMode]);
 
     const handleDeletarTurma = async (id: string) => {
         if (window.confirm('Tem certeza que deseja excluir esta turma?')) {
@@ -80,7 +80,7 @@ const ListaTurmas: React.FC = () => {
             const turmasAtuais = toArray(JSON.parse(localStorage.getItem('demoTurmas') || '[]')) ? JSON.parse(localStorage.getItem('demoTurmas') || '[]') : [];
             let turmasAtualizadas;
             if (id) {
-                turmasAtualizadas = turmasAtuais.map((t: Turma) => t.id === id ? { ...t, ...dados } : t);
+                turmasAtualizadas = turmasAtuais.map((t: Turma) => t.id === id ? { ...t, ...dados } as Turma : t);
             } else {
                 const novaTurma = { ...dados, id: `temp_${Date.now()}` };
                 turmasAtualizadas = [...turmasAtuais, novaTurma];
