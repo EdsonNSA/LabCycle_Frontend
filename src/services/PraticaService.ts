@@ -13,7 +13,7 @@ export interface Pratica {
     segurancaJson: string;
     materiaisJson: string;
     reagentesJson: string;
-    descarte: string;
+    descarteJson: string;
 }
 
 export type DadosCadastroPratica = Omit<Pratica, 'id'>;

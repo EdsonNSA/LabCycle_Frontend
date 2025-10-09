@@ -30,7 +30,7 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
     const [seguranca, setSeguranca] = useState<Seguranca>({ epis: [], cuidados: [] });
     const [materiais, setMateriais] = useState<Material[]>([]);
     const [reagentes, setReagentes] = useState<Material[]>([]);
-    const [descarte, setDescarte] = useState('');
+    const [descarte, setDescarte] = useState<string[]>([]);
     const [showVideoTip, setShowVideoTip] = useState(false);
 
     useEffect(() => {
@@ -41,12 +41,23 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
                 setDuracao(pratica.duracao);
                 setDificuldade(pratica.dificuldade);
                 setVideoUrl(pratica.videoUrl);
-                setDescarte(pratica.descarte);
-                try { setObjetivos(JSON.parse(pratica.objetivosJson)); } catch { setObjetivos([]); }
-                try { setProcedimento(JSON.parse(pratica.procedimentoJson)); } catch { setProcedimento([]); }
-                try { setSeguranca(JSON.parse(pratica.segurancaJson)); } catch { setSeguranca({ epis: [], cuidados: [] }); }
-                try { setMateriais(JSON.parse(pratica.materiaisJson)); } catch { setMateriais([]); }
-                try { setReagentes(JSON.parse(pratica.reagentesJson)); } catch { setReagentes([]); }
+
+                const parseAndSet = (jsonString: string, setter: (data: any) => void, fallback: any) => {
+                    try {
+                        const parsed = JSON.parse(jsonString);
+                        setter(parsed || fallback);
+                    } catch {
+                        setter(fallback);
+                    }
+                };
+
+                parseAndSet(pratica.objetivosJson, setObjetivos, []);
+                parseAndSet(pratica.procedimentoJson, setProcedimento, []);
+                parseAndSet(pratica.segurancaJson, setSeguranca, { epis: [], cuidados: [] });
+                parseAndSet(pratica.materiaisJson, setMateriais, []);
+                parseAndSet(pratica.reagentesJson, setReagentes, []);
+                parseAndSet(pratica.descarteJson, setDescarte, []);
+
             } else {
                 setTitulo('');
                 setDisciplina('');
@@ -58,7 +69,7 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
                 setSeguranca({ epis: [], cuidados: [] });
                 setMateriais([]);
                 setReagentes([]);
-                setDescarte('');
+                setDescarte([]);
             }
             setShowVideoTip(false);
         }
@@ -75,15 +86,16 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const dadosParaSalvar: DadosCadastroPratica = {
-            titulo, disciplina, duracao, dificuldade, videoUrl, descarte,
-            objetivosJson: JSON.stringify(objetivos.filter(item => item.trim() !== '')),
-            procedimentoJson: JSON.stringify(procedimento.filter(item => item.trim() !== '')),
+            titulo, disciplina, duracao, dificuldade, videoUrl,
+            objetivosJson: JSON.stringify(objetivos.filter(item => typeof item === 'string' && item.trim() !== '')),
+            procedimentoJson: JSON.stringify(procedimento.filter(item => typeof item === 'string' && item.trim() !== '')),
             segurancaJson: JSON.stringify({
-                epis: seguranca.epis.filter(item => item.trim() !== ''),
-                cuidados: seguranca.cuidados.filter(item => item.trim() !== '')
+                epis: seguranca.epis.filter(item => typeof item === 'string' && item.trim() !== ''),
+                cuidados: seguranca.cuidados.filter(item => typeof item === 'string' && item.trim() !== '')
             }),
             materiaisJson: JSON.stringify(materiais.filter(item => item.nome.trim() !== '')),
             reagentesJson: JSON.stringify(reagentes.filter(item => item.nome.trim() !== '')),
+            descarteJson: JSON.stringify(descarte.filter(item => typeof item === 'string' && item.trim() !== '')),
         };
         onSave(dadosParaSalvar, pratica?.id);
     };
@@ -128,7 +140,6 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
 
                     <div className="form-group"><label>Objetivos (um por linha)</label><textarea rows={4} placeholder={"Ex:\nCompreender o conceito de neutralização.\nDeterminar a concentração de uma solução."} value={objetivos.join('\n')} onChange={e => setObjetivos(e.target.value.split('\n'))} /></div>
                     <div className="form-group"><label>Procedimento (um passo por linha)</label><textarea rows={8} placeholder={"Ex:\nLave e ambiente a bureta.\nPreencha a bureta com a solução."} value={procedimento.join('\n')} onChange={e => setProcedimento(e.target.value.split('\n'))} /></div>
-
                     <div className="form-group"><label>EPIs Obrigatórios (um por linha)</label><textarea rows={3} placeholder={"Ex:\nJaleco\nÓculos de Segurança"} value={seguranca.epis.join('\n')} onChange={e => setSeguranca(s => ({ ...s, epis: e.target.value.split('\n') }))} /></div>
                     <div className="form-group"><label>Cuidados Específicos (um por linha)</label><textarea rows={3} placeholder={"Ex:\nManusear ácidos e bases com cuidado.\nNunca pipetar com a boca."} value={seguranca.cuidados.join('\n')} onChange={e => setSeguranca(s => ({ ...s, cuidados: e.target.value.split('\n') }))} /></div>
 
@@ -147,16 +158,19 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
                     <div className="form-group">
                         <label>Reagentes</label>
                         {reagentes.map((item, index) => (
-                                <div key={index} className="dynamic-list-item">
-                                    <input type="text" placeholder="Nome do reagente" value={item.nome} onChange={e => handleListChange(reagentes, setReagentes, index, 'nome', e.target.value)} />
-                                    <input type="text" placeholder="Qtd." value={item.qtd} onChange={e => handleListChange(reagentes, setReagentes, index, 'qtd', e.target.value)} style={{ flexGrow: 0, width: '80px' }} />
-                                    <button type="button" className="remove-button" onClick={() => removeFromList(setReagentes, index)} title="Remover Reagente"><Trash2 size={16} /></button>
-                                </div>
+                             <div key={index} className="dynamic-list-item">
+                                <input type="text" placeholder="Nome do reagente" value={item.nome} onChange={e => handleListChange(reagentes, setReagentes, index, 'nome', e.target.value)} />
+                                <input type="text" placeholder="Qtd." value={item.qtd} onChange={e => handleListChange(reagentes, setReagentes, index, 'qtd', e.target.value)} style={{ flexGrow: 0, width: '80px' }} />
+                                <button type="button" className="remove-button" onClick={() => removeFromList(setReagentes, index)} title="Remover Reagente"><Trash2 size={16} /></button>
+                            </div>
                         ))}
                         <button type="button" className="add-button" onClick={() => addToList(setReagentes, { nome: '', qtd: '' })}><PlusCircle size={16} /> Adicionar Reagente</button>
                     </div>
 
-                    <div className="form-group"><label>Descarte</label><textarea rows={3} placeholder="Ex: A solução final pode ser descartada na pia com água corrente." value={descarte} onChange={e => setDescarte(e.target.value)} /></div>
+                    <div className="form-group">
+                        <label>Descarte (um item por linha)</label>
+                        <textarea rows={3} placeholder="Ex: A solução final pode ser descartada na pia com água corrente." value={descarte.join('\n')} onChange={e => setDescarte(e.target.value.split('\n'))} />
+                    </div>
                     
                     <div className="modal-actions">
                         <button type="button" className="button-secondary" onClick={onClose}>Cancelar</button>
