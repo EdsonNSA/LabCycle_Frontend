@@ -18,6 +18,10 @@ interface Seguranca {
     epis: string[];
     cuidados: string[];
 }
+interface ProcedimentoItem {
+    tipo: 'titulo' | 'subtitulo' | 'passo';
+    texto: string;
+}
 
 const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, onSave }) => {
     const [titulo, setTitulo] = useState('');
@@ -26,7 +30,7 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
     const [dificuldade, setDificuldade] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
     const [objetivos, setObjetivos] = useState<string[]>([]);
-    const [procedimento, setProcedimento] = useState<string[]>([]);
+    const [procedimento, setProcedimento] = useState<ProcedimentoItem[]>([]);
     const [seguranca, setSeguranca] = useState<Seguranca>({ epis: [], cuidados: [] });
     const [materiais, setMateriais] = useState<Material[]>([]);
     const [reagentes, setReagentes] = useState<Material[]>([]);
@@ -41,61 +45,48 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
                 setDuracao(pratica.duracao);
                 setDificuldade(pratica.dificuldade);
                 setVideoUrl(pratica.videoUrl);
-
-                const parseAndSet = (jsonString: string, setter: (data: any) => void, fallback: any) => {
-                    try {
-                        const parsed = JSON.parse(jsonString);
-                        setter(parsed || fallback);
-                    } catch {
-                        setter(fallback);
-                    }
-                };
-
-                parseAndSet(pratica.objetivosJson, setObjetivos, []);
-                parseAndSet(pratica.procedimentoJson, setProcedimento, []);
-                parseAndSet(pratica.segurancaJson, setSeguranca, { epis: [], cuidados: [] });
-                parseAndSet(pratica.materiaisJson, setMateriais, []);
-                parseAndSet(pratica.reagentesJson, setReagentes, []);
-                parseAndSet(pratica.descarteJson, setDescarte, []);
-
+                try { setObjetivos(JSON.parse(pratica.objetivosJson || '[]')); } catch { setObjetivos([]); }
+                try { setProcedimento(JSON.parse(pratica.procedimentoJson || '[]')); } catch { setProcedimento([]); }
+                try { setSeguranca(JSON.parse(pratica.segurancaJson || '{"epis":[],"cuidados":[]}')); } catch { setSeguranca({ epis: [], cuidados: [] }); }
+                try { setMateriais(JSON.parse(pratica.materiaisJson || '[]')); } catch { setMateriais([]); }
+                try { setReagentes(JSON.parse(pratica.reagentesJson || '[]')); } catch { setReagentes([]); }
+                try { setDescarte(JSON.parse(pratica.descarteJson || '[]')); } catch { setDescarte([]); }
             } else {
-                setTitulo('');
-                setDisciplina('');
-                setDuracao('');
-                setDificuldade('');
-                setVideoUrl('');
-                setObjetivos([]);
-                setProcedimento([]);
-                setSeguranca({ epis: [], cuidados: [] });
-                setMateriais([]);
-                setReagentes([]);
-                setDescarte([]);
+                setTitulo(''); setDisciplina(''); setDuracao(''); setDificuldade(''); setVideoUrl('');
+                setObjetivos([]); setProcedimento([]); setSeguranca({ epis: [], cuidados: [] });
+                setMateriais([]); setReagentes([]); setDescarte([]);
             }
             setShowVideoTip(false);
         }
     }, [pratica, isOpen]);
 
-    const handleListChange = (list: Material[], setList: React.Dispatch<React.SetStateAction<Material[]>>, index: number, field: keyof Material, value: string) => {
-        const newList = [...list];
-        newList[index][field] = value;
-        setList(newList);
+    const handleMaterialListChange = (list: Material[], setList: React.Dispatch<React.SetStateAction<Material[]>>, index: number, field: keyof Material, value: string) => {
+        const newList = [...list]; newList[index][field] = value; setList(newList);
     };
-    const addToList = (setList: React.Dispatch<React.SetStateAction<Material[]>>, newItem: Material) => setList((prev) => [...prev, newItem]);
-    const removeFromList = (setList: React.Dispatch<React.SetStateAction<Material[]>>, index: number) => setList((prev) => prev.filter((_, i) => i !== index));
+    const addMaterialToList = (setList: React.Dispatch<React.SetStateAction<Material[]>>, newItem: Material) => setList((prev) => [...prev, newItem]);
+    const removeMaterialFromList = (setList: React.Dispatch<React.SetStateAction<Material[]>>, index: number) => setList((prev) => prev.filter((_, i) => i !== index));
+    
+    const handleProcedimentoChange = (index: number, field: keyof ProcedimentoItem, value: string) => {
+        const newProcedimento = [...procedimento];
+        newProcedimento[index][field] = value as ProcedimentoItem['tipo'];
+        setProcedimento(newProcedimento);
+    };
+    const addProcedimentoStep = () => setProcedimento(prev => [...prev, { tipo: 'passo', texto: '' }]);
+    const removeProcedimentoStep = (index: number) => setProcedimento(prev => prev.filter((_, i) => i !== index));
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const dadosParaSalvar: DadosCadastroPratica = {
             titulo, disciplina, duracao, dificuldade, videoUrl,
-            objetivosJson: JSON.stringify(objetivos.filter(item => typeof item === 'string' && item.trim() !== '')),
-            procedimentoJson: JSON.stringify(procedimento.filter(item => typeof item === 'string' && item.trim() !== '')),
+            objetivosJson: JSON.stringify(objetivos.filter(item => item.trim() !== '')),
+            procedimentoJson: JSON.stringify(procedimento.filter(item => item.texto.trim() !== '')),
             segurancaJson: JSON.stringify({
-                epis: seguranca.epis.filter(item => typeof item === 'string' && item.trim() !== ''),
-                cuidados: seguranca.cuidados.filter(item => typeof item === 'string' && item.trim() !== '')
+                epis: seguranca.epis.filter(item => item.trim() !== ''),
+                cuidados: seguranca.cuidados.filter(item => item.trim() !== '')
             }),
             materiaisJson: JSON.stringify(materiais.filter(item => item.nome.trim() !== '')),
             reagentesJson: JSON.stringify(reagentes.filter(item => item.nome.trim() !== '')),
-            descarteJson: JSON.stringify(descarte.filter(item => typeof item === 'string' && item.trim() !== '')),
+            descarteJson: JSON.stringify(descarte.filter(item => item.trim() !== '')),
         };
         onSave(dadosParaSalvar, pratica?.id);
     };
@@ -111,7 +102,6 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
                     <div className="form-group"><label>Título da Prática</label><input type="text" placeholder="Ex: Titulação Ácido-Base" value={titulo} onChange={e => setTitulo(e.target.value)} required /></div>
                     <div className="form-group"><label>Disciplina</label><input type="text" placeholder="Ex: Química Geral" value={disciplina} onChange={e => setDisciplina(e.target.value)} /></div>
                     <div className="form-group"><label>Duração</label><input type="text" placeholder="Ex: 90 min" value={duracao} onChange={e => setDuracao(e.target.value)} /></div>
-                    
                     <div className="form-group">
                         <label>Dificuldade</label>
                         <select value={dificuldade} onChange={e => setDificuldade(e.target.value)} required>
@@ -121,13 +111,10 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
                             <option value="Difícil">Difícil</option>
                         </select>
                     </div>
-                    
                     <div className="form-group form-group-with-tip">
                         <div className="label-with-help">
                             <label htmlFor="videoUrl">URL do Vídeo</label>
-                            <button type="button" className="help-button" onClick={() => setShowVideoTip(!showVideoTip)} title="Ajuda sobre o link do vídeo">
-                                <HelpCircle size={16} />
-                            </button>
+                            <button type="button" className="help-button" onClick={() => setShowVideoTip(!showVideoTip)} title="Ajuda sobre o link do vídeo"><HelpCircle size={16} /></button>
                         </div>
                         <input id="videoUrl" type="text" placeholder="Ex: https://www.youtube.com/embed/codigoDoVideo" value={videoUrl} onChange={e => setVideoUrl(e.target.value)} />
                         {showVideoTip && (
@@ -139,7 +126,28 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
                     </div>
 
                     <div className="form-group"><label>Objetivos (um por linha)</label><textarea rows={4} placeholder={"Ex:\nCompreender o conceito de neutralização.\nDeterminar a concentração de uma solução."} value={objetivos.join('\n')} onChange={e => setObjetivos(e.target.value.split('\n'))} /></div>
-                    <div className="form-group"><label>Procedimento (um passo por linha)</label><textarea rows={8} placeholder={"Ex:\nLave e ambiente a bureta.\nPreencha a bureta com a solução."} value={procedimento.join('\n')} onChange={e => setProcedimento(e.target.value.split('\n'))} /></div>
+                    
+                    <div className="form-group">
+                        <label>Procedimento</label>
+                        {procedimento.map((item, index) => (
+                            <div key={index} className="procedimento-list-item">
+                                <select value={item.tipo} onChange={e => handleProcedimentoChange(index, 'tipo', e.target.value)}>
+                                    <option value="passo">Passo</option>
+                                    <option value="titulo">Título</option>
+                                    <option value="subtitulo">Subtítulo</option>
+                                </select>
+                                <textarea
+                                    placeholder="Descreva o passo, título ou subtítulo..."
+                                    value={item.texto}
+                                    onChange={e => handleProcedimentoChange(index, 'texto', e.target.value)}
+                                    rows={1}
+                                />
+                                <button type="button" className="remove-button" onClick={() => removeProcedimentoStep(index)} title="Remover Passo"><Trash2 size={16} /></button>
+                            </div>
+                        ))}
+                        <button type="button" className="add-button" onClick={addProcedimentoStep}><PlusCircle size={16} /> Adicionar Etapa ao Procedimento</button>
+                    </div>
+
                     <div className="form-group"><label>EPIs Obrigatórios (um por linha)</label><textarea rows={3} placeholder={"Ex:\nJaleco\nÓculos de Segurança"} value={seguranca.epis.join('\n')} onChange={e => setSeguranca(s => ({ ...s, epis: e.target.value.split('\n') }))} /></div>
                     <div className="form-group"><label>Cuidados Específicos (um por linha)</label><textarea rows={3} placeholder={"Ex:\nManusear ácidos e bases com cuidado.\nNunca pipetar com a boca."} value={seguranca.cuidados.join('\n')} onChange={e => setSeguranca(s => ({ ...s, cuidados: e.target.value.split('\n') }))} /></div>
 
@@ -147,30 +155,27 @@ const ModalPratica: React.FC<ModalPraticaProps> = ({ pratica, isOpen, onClose, o
                         <label>Materiais</label>
                         {materiais.map((item, index) => (
                             <div key={index} className="dynamic-list-item">
-                                <input type="text" placeholder="Nome do material" value={item.nome} onChange={e => handleListChange(materiais, setMateriais, index, 'nome', e.target.value)} />
-                                <input type="text" placeholder="Qtd." value={item.qtd} onChange={e => handleListChange(materiais, setMateriais, index, 'qtd', e.target.value)} style={{ flexGrow: 0, width: '80px' }} />
-                                <button type="button" className="remove-button" onClick={() => removeFromList(setMateriais, index)} title="Remover Material"><Trash2 size={16} /></button>
+                                <input type="text" placeholder="Nome do material" value={item.nome} onChange={e => handleMaterialListChange(materiais, setMateriais, index, 'nome', e.target.value)} />
+                                <input type="text" placeholder="Qtd." value={item.qtd} onChange={e => handleMaterialListChange(materiais, setMateriais, index, 'qtd', e.target.value)} style={{ flexGrow: 0, width: '80px' }} />
+                                <button type="button" className="remove-button" onClick={() => removeMaterialFromList(setMateriais, index)} title="Remover Material"><Trash2 size={16} /></button>
                             </div>
                         ))}
-                        <button type="button" className="add-button" onClick={() => addToList(setMateriais, { nome: '', qtd: '' })}><PlusCircle size={16} /> Adicionar Material</button>
+                        <button type="button" className="add-button" onClick={() => addMaterialToList(setMateriais, { nome: '', qtd: '' })}><PlusCircle size={16} /> Adicionar Material</button>
                     </div>
 
                     <div className="form-group">
                         <label>Reagentes</label>
                         {reagentes.map((item, index) => (
                              <div key={index} className="dynamic-list-item">
-                                <input type="text" placeholder="Nome do reagente" value={item.nome} onChange={e => handleListChange(reagentes, setReagentes, index, 'nome', e.target.value)} />
-                                <input type="text" placeholder="Qtd." value={item.qtd} onChange={e => handleListChange(reagentes, setReagentes, index, 'qtd', e.target.value)} style={{ flexGrow: 0, width: '80px' }} />
-                                <button type="button" className="remove-button" onClick={() => removeFromList(setReagentes, index)} title="Remover Reagente"><Trash2 size={16} /></button>
+                                <input type="text" placeholder="Nome do reagente" value={item.nome} onChange={e => handleMaterialListChange(reagentes, setReagentes, index, 'nome', e.target.value)} />
+                                <input type="text" placeholder="Qtd." value={item.qtd} onChange={e => handleMaterialListChange(reagentes, setReagentes, index, 'qtd', e.target.value)} style={{ flexGrow: 0, width: '80px' }} />
+                                <button type="button" className="remove-button" onClick={() => removeMaterialFromList(setReagentes, index)} title="Remover Reagente"><Trash2 size={16} /></button>
                             </div>
                         ))}
-                        <button type="button" className="add-button" onClick={() => addToList(setReagentes, { nome: '', qtd: '' })}><PlusCircle size={16} /> Adicionar Reagente</button>
+                        <button type="button" className="add-button" onClick={() => addMaterialToList(setReagentes, { nome: '', qtd: '' })}><PlusCircle size={16} /> Adicionar Reagente</button>
                     </div>
 
-                    <div className="form-group">
-                        <label>Descarte (um item por linha)</label>
-                        <textarea rows={3} placeholder="Ex: A solução final pode ser descartada na pia com água corrente." value={descarte.join('\n')} onChange={e => setDescarte(e.target.value.split('\n'))} />
-                    </div>
+                    <div className="form-group"><label>Descarte (um item por linha)</label><textarea rows={3} placeholder="Ex: A solução final pode ser descartada na pia com água corrente." value={descarte.join('\n')} onChange={e => setDescarte(e.target.value.split('\n'))} /></div>
                     
                     <div className="modal-actions">
                         <button type="button" className="button-secondary" onClick={onClose}>Cancelar</button>
