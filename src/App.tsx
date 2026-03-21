@@ -12,7 +12,6 @@ import PaginaPratica from './pages/PaginaPratica/PaginaPratica';
 import GerenciarPraticas from './pages/PaginaPratica/GerenciarPraticas'; 
 import GestaoPraticas from './pages/PaginaPratica/GestaoPraticas';
 
-
 const App: React.FC = () => {
     return (
         <Router>
@@ -20,6 +19,8 @@ const App: React.FC = () => {
                 <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/login" element={<Login />} />
                 {/* <Route path="/register" element={<Register />} /> */}
+                
+                {/* Todas as rotas abaixo usam <Layout>, então a Cyla deve estar dentro dele */}
                 <Route path="/painel-aluno" element={<Layout><PainelAluno /></Layout>} />
                 <Route path="/painel-responsavel" element={<Layout><PainelResponsavel /></Layout>} />
                 <Route path="/catalogo-kits" element={<Layout><CatalogoKits /></Layout>} />
@@ -28,6 +29,7 @@ const App: React.FC = () => {
                 <Route path="/minhas-turmas/:turmaId/praticas" element={<Layout><GerenciarPraticas /></Layout>} />
                 <Route path="/gestao-praticas" element={<Layout><GestaoPraticas /></Layout>} />
                 <Route path="/praticas/:praticaId" element={<Layout><PaginaPratica /></Layout>} />
+                
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
+import CylaAssistant from '../../pages/CylaAssistant'; // Certifique-se de que o caminho está correto
 import './Layout.css';
 import { Bell } from 'lucide-react';
 
@@ -17,7 +18,7 @@ const pageConfig: { [key: string]: { title: string; action?: React.ReactNode } }
     '/gestao-inventario': { title: 'Gestão de Inventário' },
     '/minhas-turmas': { title: 'Minhas Turmas' },
     '/gestao-praticas': { title: 'Gerenciar Práticas' },
-    '/praticas/:praticaId': { title: 'Detalhes da Prática' },
+    '/praticas': { title: 'Detalhes da Prática' }, // Ajustado para pegar o prefixo
 };
 
 interface LayoutProps {
@@ -26,7 +27,12 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     const location = useLocation();
-    const config = pageConfig[location.pathname] || { title: 'LabCycle' };
+    
+    // Lógica para encontrar o título correto mesmo em rotas com ID
+    const currentPath = location.pathname;
+    const configKey = Object.keys(pageConfig).find(key => currentPath.startsWith(key)) || '';
+    const config = pageConfig[configKey] || { title: 'LabCycle' };
+
     const userRole = (localStorage.getItem('userRole') || 'PROFESSOR') as 'ALUNO' | 'PROFESSOR' | 'TECNICO' | 'ADMIN';
 
     console.log("Verificando userRole no Layout:", userRole);
@@ -34,13 +40,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
         <div className="layout-container">
             <Sidebar userRole={userRole} />
+            
             <div className="content-wrapper">
                 <header className="main-header">
                     <div>
                         <h2 className="header-title">{config.title}</h2>
                     </div>
+                    
                     <div className="header-right-side">
                         {config.action && <div className="header-action">{config.action}</div>}
+                        
                         <div className="header-user-info">
                             <Bell className="notification-icon" />
                             <div className="user-details">
@@ -53,9 +62,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         </div>
                     </div>
                 </header>
+
                 <main className="content-area">
                     {children}
                 </main>
+
+                {/* A CYLA APARECE AQUI - Disponível em todas as páginas do Layout */}
+                <CylaAssistant />
             </div>
         </div>
     );
