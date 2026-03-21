@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import './PaginaPratica.css';
 import { Clock, BarChart, Check, List, Trash2, ShieldAlert, Printer, Edit, Save, MessageSquare, Send, Wrench, FlaskConical } from 'lucide-react';
-import { buscarPraticaPorId, Pratica, atualizarPratica, DadosCadastroPratica } from '../../services/PraticaService';
+import { buscarPraticaPorId, Pratica, atualizarPratica } from '../../services/PraticaService';
 import { buscarComentarios, criarComentario, Comentario } from '../../services/comentarioService';
 
 interface Seguranca {

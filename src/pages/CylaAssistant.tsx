@@ -36,11 +36,11 @@ const CylaAssistant: React.FC = () => {
         setMessages([{ id: Date.now(), text: frase, sender: 'cyla' }]);
     };
 
-    useEffect(() => {
-        if (isOpen && messages.length === 0) {
-            gerarSaudacaoAleatoria();
-        }
-    }, [isOpen]);
+useEffect(() => {
+    if (isOpen && messages.length === 0) {
+        gerarSaudacaoAleatoria();
+    }
+}, [isOpen, messages.length]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
