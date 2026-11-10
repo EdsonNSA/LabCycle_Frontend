@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+:root {
+  --brand-950: #102b24;
+  --brand-900: #163b32;
+  --brand-800: #21473a;
+  --brand-700: #2a5b4a;
+  --brand-600: #34735d;
+  --brand-500: #3a7a65;
+  --brand-100: #e0f2ed;
+  --brand-50: #f1f8f5;
+  --teal-500: #16a6a0;
+  --surface: #ffffff;
+  --surface-muted: #f6f9f7;
+  --surface-soft: #eef5f1;
+  --text-strong: #17221f;
+  --text: #33433d;
+  --text-muted: #6d7d76;
+  --border: #dce7e1;
+  --border-strong: #c8d8d0;
+  --success: #16845b;
+  --warning: #c78316;
+  --danger: #c74343;
+  --info: #2563a9;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-sm: 0 1px 3px rgb(16 43 36 / 0.08);
+  --shadow-md: 0 10px 30px rgb(16 43 36 / 0.10);
+  --shadow-lg: 0 20px 50px rgb(16 43 36 / 0.16);
+  --focus-ring: 0 0 0 4px rgb(22 166 160 / 0.18);
+  --sidebar-width: 264px;
+  --header-height: 72px;
+  --content-max-width: 1600px;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: var(--surface-muted);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { min-width: 320px; background: var(--surface-muted); }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--surface-muted);
+  color: var(--text);
+  font-family: inherit;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+::selection { background: var(--brand-100); color: var(--brand-950); }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  color: var(--text-strong);
+  font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
+  letter-spacing: -0.025em;
+}
+
+p { margin: 0; }
+
+/* Shared visual primitives used by legacy page styles. */
+.action-button, .pr-action-button, .gi-action-button, .login-button,
+.register-button, .button-primary, .ck-kit-button.primary {
+  min-height: 42px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--brand-700);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.action-button:hover, .pr-action-button:hover, .gi-action-button:hover,
+.login-button:hover, .register-button:hover, .button-primary:hover,
+.ck-kit-button.primary:hover {
+  background: var(--brand-800);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.action-button:active, .pr-action-button:active, .gi-action-button:active,
+.login-button:active, .register-button:active, .button-primary:active,
+.ck-kit-button.primary:active { transform: translateY(0); }
+
+button:disabled { cursor: not-allowed; opacity: 0.58; transform: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* Cross-page polish for the existing screens. */
+input, select, textarea {
+  color: var(--text);
+  border-color: var(--border);
+}
+
+input::placeholder, textarea::placeholder { color: #91a19a; }
+
+input:hover, select:hover, textarea:hover { border-color: var(--border-strong); }
+
+.table-wrapper, .responsive-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+table { border-collapse: separate; border-spacing: 0; }
+
+.modal-overlay { z-index: 100; }
+
+.status-ok, .status-baixo-estoque, .status-vencendo, .status-vencido {
+  border: 1px solid rgb(16 43 36 / 0.06);
+  font-weight: 700;
+}

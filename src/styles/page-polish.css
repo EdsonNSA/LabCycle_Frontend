@@ -1,0 +1,66 @@
+.ck-catalogo-header, .gi-page-header, .lt-page-header, .gp-page-header, .pp-pratica-header {
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ck-kits-grid, .lt-turmas-grid, .gp-praticas-list {
+  gap: 1.25rem;
+}
+
+.ck-kit-card, .lt-turma-card, .gp-pratica-card, .pa-card, .pr-card, .pp-card, .gi-table-container {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.ck-kit-card:hover, .lt-turma-card:hover, .gp-pratica-card:hover, .pa-card:hover, .pr-card:hover, .pp-card:hover {
+  border-color: var(--border-strong) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-2px);
+}
+
+.gi-inventory-table, .gp-lista-table, .pr-inventory-table {
+  min-width: 680px;
+}
+
+.gi-table-container { overflow-x: auto; }
+
+.gi-inventory-table th, .gp-lista-table th, .pr-inventory-table th {
+  background: var(--surface-soft);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.modal-content {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.form-group input, .form-group select, .form-group textarea,
+.gi-search-input, .gi-filter-select, .ck-search-input, .ck-filter-select,
+.register-input {
+  border-color: var(--border) !important;
+  border-radius: var(--radius-sm) !important;
+  background: var(--surface-muted) !important;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus,
+.gi-search-input:focus, .gi-filter-select:focus, .ck-search-input:focus,
+.ck-filter-select:focus, .register-input:focus {
+  border-color: var(--teal-500) !important;
+  box-shadow: var(--focus-ring) !important;
+  outline: none;
+}
+
+@media (max-width: 700px) {
+  .ck-catalogo-header, .gi-page-header, .lt-page-header, .gp-page-header, .pp-pratica-header { align-items: stretch; flex-direction: column; }
+  .ck-filters-wrapper, .gi-filters-wrapper, .pp-pratica-actions { width: 100%; flex-wrap: wrap; }
+  .ck-search-wrapper, .gi-search-wrapper { width: 100%; }
+  .ck-search-input, .gi-search-input { width: 100%; }
+  .modal-content { width: calc(100vw - 2rem) !important; max-height: calc(100vh - 2rem); overflow-y: auto; }
+  .form-row { grid-template-columns: 1fr !important; }
+}

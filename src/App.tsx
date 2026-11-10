@@ -11,6 +11,7 @@ import ListaTurmas from './pages/ListaTurmas/ListaTurmas';
 import PaginaPratica from './pages/PaginaPratica/PaginaPratica';
 import GerenciarPraticas from './pages/PaginaPratica/GerenciarPraticas'; 
 import GestaoPraticas from './pages/PaginaPratica/GestaoPraticas';
+import './styles/page-polish.css';
 
 
 const App: React.FC = () => {

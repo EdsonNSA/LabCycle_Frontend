@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
 import './Layout.css';
-import { Bell } from 'lucide-react';
+import { Bell, Menu } from 'lucide-react';
 
 const userInfo = {
     nome: 'Edson Nunes',
@@ -28,26 +28,33 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const location = useLocation();
     const config = pageConfig[location.pathname] || { title: 'LabCycle' };
     const userRole = (localStorage.getItem('userRole') || 'PROFESSOR') as 'ALUNO' | 'PROFESSOR' | 'TECNICO' | 'ADMIN';
-
-    console.log("Verificando userRole no Layout:", userRole);
+    const [sidebarOpen, setSidebarOpen] = React.useState(false);
+    const userEmail = localStorage.getItem('userEmail') || userInfo.nome;
+    const userInitial = userEmail.charAt(0).toUpperCase();
 
     return (
         <div className="layout-container">
-            <Sidebar userRole={userRole} />
+            <Sidebar userRole={userRole} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
             <div className="content-wrapper">
                 <header className="main-header">
-                    <div>
+                    <div className="header-heading">
+                        <button className="mobile-menu-button" type="button" aria-label="Abrir menu" onClick={() => setSidebarOpen(true)}>
+                            <Menu size={21} />
+                        </button>
                         <h2 className="header-title">{config.title}</h2>
                     </div>
                     <div className="header-right-side">
                         {config.action && <div className="header-action">{config.action}</div>}
                         <div className="header-user-info">
-                            <Bell className="notification-icon" />
+                            <button className="notification-button" type="button" aria-label="Notificações">
+                                <Bell className="notification-icon" />
+                                <span className="notification-dot" aria-hidden="true" />
+                            </button>
                             <div className="user-details">
-                                <img src={userInfo.avatarUrl} alt="Avatar do usuário" className="user-avatar" />
+                                <div className="user-avatar" aria-hidden="true">{userInitial}</div>
                                 <div>
-                                    <p className="user-name">{userInfo.nome}</p>
-                                    <p className="user-course">{userInfo.departamento}</p>
+                                    <p className="user-name">{userEmail}</p>
+                                    <p className="user-course">{userRole === 'ALUNO' ? 'Aluno' : 'Equipe LabCycle'}</p>
                                 </div>
                             </div>
                         </div>
